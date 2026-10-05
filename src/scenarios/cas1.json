@@ -1,0 +1,42 @@
+{
+  "id": 1,
+  "titre": "Le Faux Concours des Douanes",
+  "personnage": "Maman Awa",
+  "categorie": "Argent",
+  "telephone": "Samsung",
+  "app_simulee": "WhatsApp",
+  "dialogues": [
+    {
+      "id": "msg1",
+      "emetteur": "escroc",
+      "type": "texte",
+      "contenu": "Félicitations Mme Awa ! Vous êtes présélectionné au Concours des Douanes 2026. Frais de dossier de 5000F à payer via Moov Money pour recevoir vos 500 000F. Répondez VITE.",
+      "signaux_caches": ["numéro_inconnu", "faute_grammaire", "urgence_artificielle"],
+      "timer": 90
+    }
+  ],
+  "choix": [
+    {
+      "id": "choix1",
+      "texte": "Je paie les 5000F tout de suite",
+      "consequence": "perte_totale",
+      "fin": "Vous avez envoyé 5000F. L'escroc vous bloque. Vous avez perdu votre argent."
+    },
+    {
+      "id": "choix2",
+      "texte": "Je demande de quel concours il s'agit",
+      "consequence": "pression",
+      "suite": "msg2"
+    },
+    {
+      "id": "choix3",
+      "texte": "Je vérifie le numéro / J'appelle mon fils",
+      "consequence": "sauve",
+      "fin": "Bravo ! Votre fils vous confirme que c'est une arnaque. Vous bloquez le numéro."
+    }
+  ],
+  "relance_90s": {
+    "emetteur": "escroc",
+    "contenu": "Attention ! Le délai est presque écoulé. Si vous ne payez pas maintenant, vous êtes disqualifiée à vie."
+  }
+}

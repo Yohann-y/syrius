@@ -1,0 +1,284 @@
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.phone-frame {
+  width: 320px;
+  height: 600px;
+  background-color: white;
+  border: 10px solid #333;
+  border-radius: 30px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 20px;
+  background-color: #333;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  z-index: 10;
+}
+
+.app-header {
+  background-color: #075E54;
+  color: white;
+  padding: 30px 15px 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-name { font-size: 14px; font-weight: bold; }
+.contact-name { font-size: 12px; margin-top: 5px; }
+
+.chat-area {
+  flex: 1;
+  background-color: #ECE5DD;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.message {
+  max-width: 80%;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  position: relative;
+}
+
+.message.received {
+  background-color: white;
+  align-self: flex-start;
+  border-top-left-radius: 0;
+}
+
+.message.sent {
+  background-color: #DCF8C6;
+  align-self: flex-end;
+  border-top-right-radius: 0;
+}
+
+.time {
+  display: block;
+  font-size: 10px;
+  color: #999;
+  text-align: right;
+  margin-top: 5px;
+}
+
+.choices-area {
+  padding: 10px;
+  background-color: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.choice-btn {
+  padding: 10px;
+  background-color: #075E54;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.choice-btn:hover {
+  background-color: #128C7E;
+}
+/* Écran de fin */
+.end-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  z-index: 20;
+}
+
+.end-screen h2 {
+  color: #075E54;
+  font-size: 18px;
+  margin-bottom: 15px;
+  margin-top: 20px;
+}
+
+.result-box {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 13px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.signals-section {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.signals-section h3 {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+  margin-top: 15px;
+}
+
+.signals-list {
+  list-style: none;
+  padding: 0;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.signals-list.found li {
+  color: green;
+  margin-bottom: 3px;
+}
+
+.signals-list.missed li {
+  color: red;
+  margin-bottom: 3px;
+}
+
+.end-buttons {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+  margin-bottom: 20px;
+}
+
+/* Bouton loupe */
+.loupe-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: white;
+  border: 2px solid #075E54;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
+}
+
+.loupe-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Texte surligné quand la loupe est active */
+.highlight {
+  background-color: #ffeb3b; /* Jaune surligneur */
+  font-weight: bold;
+  border-radius: 3px;
+  padding: 0 2px;
+  animation: pop 0.3s ease-out;
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Écran Mobile Money */
+.momo-screen {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #004d99; /* Bleu Moov/MTN */
+  color: white;
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+}
+
+.momo-header {
+  background-color: #003366;
+  padding: 30px 15px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.momo-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.momo-body {
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.momo-amount { font-size: 24px; text-align: center; margin: 0; }
+.momo-recipient { text-align: center; opacity: 0.8; margin: 0; }
+
+.momo-label { font-size: 14px; display: block; margin-bottom: 10px; }
+
+.momo-input {
+  width: 100%;
+  padding: 15px;
+  font-size: 24px;
+  text-align: center;
+  letter-spacing: 10px;
+  border: none;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.momo-btn {
+  width: 100%;
+  padding: 15px;
+  background-color: #ffcc00;
+  color: #003366;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.momo-warning {
+  font-size: 12px;
+  color: #ffcc00;
+  text-align: center;
+  margin-top: 20px;
+}
