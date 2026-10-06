@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Case",
+  "type": "object",
+  "required": ["metadata", "messages", "choices", "endings"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["id", "title", "category", "scamType", "playedCharacter", "estimatedDurationMinutes"],
+      "properties": {
+        "id": {"type": "string"},
+        "title": {"type": "string"},
+        "category": {"enum": ["argent", "emploi", "logement", "urgence", "image"]},
+        "scamType": {"type": "string"},
+        "playedCharacter": {"type": "string"},
+        "estimatedDurationMinutes": {"type": "number", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "sender", "content", "delaySeconds"],
+        "properties": {
+          "id": {"type": "string"},
+          "sender": {"type": "string"},
+          "delaySeconds": {"type": "number", "minimum": 0},
+          "content": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": ["type", "text"],
+                "properties": {
+                  "type": {"const": "text"},
+                  "text": {"type": "string"}
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": ["type", "transcription"],
+                "properties": {
+                  "type": {"const": "voice"},
+                  "voiceUrl": {"type": "string"},
+                  "transcription": {"type": "string"}
+                },
+                "additionalProperties": false
+              }
+            ]
+          },
+          "hiddenSignals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "explanation"],
+              "properties": {
+                "id": {"type": "string"},
+                "explanation": {"type": "string"}
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "choices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["label", "nextMessageId", "effects"],
+        "properties": {
+          "label": {"type": "string"},
+          "nextMessageId": {"type": "string"},
+          "effects": {
+            "type": "object",
+            "properties": {
+              "detectedSignals": {"type": "array", "items": {"type": "string"}},
+              "moneyLost": {"type": "number"},
+              "pressureIncrease": {"type": "number"}
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "endings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "summaryMessage"],
+        "properties": {
+          "id": {"type": "string"},
+          "type": {"enum": ["réussie", "perdue", "partielle"]},
+          "summaryMessage": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,45 @@
+// src/data/cases/example.json
+{
+  "metadata": {
+    "id": "case001",
+    "title": "Escroquerie à l’emploi",
+    "category": "emploi",
+    "scamType": "Fausses offres d'emploi",
+    "playedCharacter": "Candidat",
+    "estimatedDurationMinutes": 15
+  },
+  "messages": [
+    {
+      "id": "msg1",
+      "sender": "recruteur",
+      "content": { "type": "text", "text": "Bonjour, nous avons vu votre CV et nous souhaiterions vous proposer un poste à distance très bien payé." },
+      "delaySeconds": 0,
+      "hiddenSignals": [
+        { "id": "sig1", "explanation": "L'adresse e‑mail provient d'un domaine gratuit, suspicion de fraude" }
+      ]
+    },
+    {
+      "id": "msg2",
+      "sender": "recruteur",
+      "content": { "type": "voice", "voiceUrl": "https://example.com/voice1.mp3", "transcription": "Veuillez nous envoyer vos coordonnées bancaires pour le versement anticipé du salaire." },
+      "delaySeconds": 30,
+      "hiddenSignals": []
+    }
+  ],
+  "choices": [
+    {
+      "label": "Fournir les coordonnées bancaires",
+      "nextMessageId": "msg2",
+      "effects": { "detectedSignals": ["sig1"], "moneyLost": 2000, "pressureIncrease": 2 }
+    },
+    {
+      "label": "Demander plus d’informations",
+      "nextMessageId": "msg3",
+      "effects": { "detectedSignals": [], "moneyLost": 0, "pressureIncrease": 1 }
+    }
+  ],
+  "endings": [
+    { "id": "end1", "type": "réussie", "summaryMessage": "Vous avez détecté l’arnaque et évité de perdre de l’argent." },
+    { "id": "end2", "type": "perdue", "summaryMessage": "Vous avez versé l’argent et vous êtes victime de fraude." }
+  ]
+}
