@@ -1,0 +1,53 @@
+[
+  {
+    "id": 1,
+    "titre": "Concours des Douanes",
+    "categorie": "💵 Argent",
+    "initialMsg": {
+      "id": 1, "type": "received", "time": "11:42", "isVocal": true,
+      "parts": [
+        { "text": "Félicitations Mme Awa ! Vous êtes présélectionné au ", "suspect": false },
+        { "text": "Concours des Douanes 2026", "suspect": true },
+        { "text": ". Frais de dossier de ", "suspect": false },
+        { "text": "5000F", "suspect": true },
+        { "text": " à payer via Moov Money pour recevoir vos 500 000F. Répondez ", "suspect": false },
+        { "text": "VITE", "suspect": true }
+      ]
+    },
+    "relanceMsg": { "id": 99, "type": "received", "content": "⚠️ ALERTE : Votre gain sera annulé dans 10 secondes si vous ne payez pas les frais !", "time": "11:43" }
+  },
+  {
+    "id": 2,
+    "titre": "Faux Accident",
+    "categorie": "🚨 Urgence",
+    "initialMsg": {
+      "id": 1, "type": "received", "time": "13:17", "isVocal": true,
+      "parts": [
+        { "text": "Maman c'est moi, ", "suspect": false },
+        { "text": "j'ai eu un grave accident", "suspect": true },
+        { "text": ". Le médecin exige ", "suspect": false },
+        { "text": "100 000F tout de suite", "suspect": true },
+        { "text": " pour l'opération. Envoie sur ce numéro Moov, ", "suspect": false },
+        { "text": "ne préviens pas papa", "suspect": true },
+        { "text": "." }
+      ]
+    },
+    "relanceMsg": { "id": 99, "type": "received", "content": "Maman je souffre beaucoup, dépêche-toi s'il te plaît !", "time": "13:18" }
+  },
+  {
+    "id": 3,
+    "titre": "Faux Likeur de Vidéos",
+    "categorie": "💼 Emploi",
+    "initialMsg": {
+      "id": 1, "type": "received", "time": "09:15", "isVocal": false,
+      "parts": [
+        { "text": "Bonjour ! Gagnez ", "suspect": false },
+        { "text": "15 000 F par jour", "suspect": true },
+        { "text": " en likant des vidéos TikTok. ", "suspect": false },
+        { "text": "Premier retrait garanti", "suspect": true },
+        { "text": " dès aujourd'hui. Cliquez ici pour commencer." }
+      ]
+    },
+    "relanceMsg": { "id": 99, "type": "received", "content": "Il ne vous reste que 5 places ! Cliquez vite sur le lien.", "time": "09:16" }
+  }
+]
