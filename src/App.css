@@ -282,3 +282,175 @@
   text-align: center;
   margin-top: 20px;
 }
+
+/* --- MENU PRINCIPAL --- */
+.menu-frame {
+  background: linear-gradient(135deg, #075E54, #128C7E);
+  color: white;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.menu-header h1 { font-size: 32px; margin-bottom: 10px; letter-spacing: 2px; }
+.menu-header p { font-size: 14px; opacity: 0.8; margin-bottom: 30px; }
+.menu-list { width: 100%; padding: 0 20px; display: flex; flex-direction: column; gap: 15px; }
+.scenario-btn {
+  background: white; color: #075E54; border: none; border-radius: 12px;
+  padding: 15px; cursor: pointer; display: flex; flex-direction: column;
+  transition: transform 0.2s;
+}
+.scenario-btn:hover { transform: scale(1.05); }
+.scen-cat { font-size: 12px; font-weight: bold; opacity: 0.7; text-align: left; }
+.scen-title { font-size: 18px; font-weight: bold; text-align: left; margin-top: 5px; }
+
+/* --- TIMER --- */
+.header-top { display: flex; justify-content: space-between; align-items: center; }
+.timer {
+  background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 12px;
+  font-size: 12px; font-weight: bold;
+}
+.timer-danger {
+  background: #ff4444; animation: pulse 1s infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Sélecteur de téléphone en haut */
+.skin-selector {
+  position: absolute;
+  top: 10px;
+  display: flex;
+  gap: 10px;
+  z-index: 100;
+}
+.skin-selector button {
+  background: white; border: 1px solid #ccc; padding: 5px 10px; border-radius: 15px; cursor: pointer; font-size: 12px;
+}
+.skin-selector button.active { background: #075E54; color: white; border-color: #075E54; }
+
+/* --- HABILLAGES (SKINS) --- */
+
+/* iPhone : Très arrondi, grosse encoche */
+.skin-iphone {
+  border-radius: 40px;
+  border-width: 12px;
+}
+.notch-iphone {
+  width: 120px; height: 25px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;
+}
+
+/* Samsung : Coins moins arrondis, petit trou (hole punch) */
+.skin-samsung {
+  border-radius: 20px;
+  border-width: 8px;
+}
+.notch-samsung {
+  width: 20px; height: 20px; border-radius: 50%; /* Trou pour la caméra */
+  border-bottom-left-radius: 50%; border-bottom-right-radius: 50%;
+}
+
+/* Pixel : Arrondi moyen, encoche fine */
+.skin-pixel {
+  border-radius: 30px;
+  border-width: 10px;
+  border-color: #1a1a1a;
+}
+.notch-pixel {
+  width: 80px; height: 15px; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;
+}
+
+/* --- ARBRE DES CHEMINS --- */
+.path-tree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin: 15px 0;
+  width: 100%;
+}
+.path-step {
+  background: #f0f0f0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  text-align: center;
+  width: 90%;
+  border: 1px solid #ddd;
+}
+.path-arrow {
+  color: #999;
+  font-size: 16px;
+}
+.path-step.highlight-choice {
+  background: #DCF8C6;
+  border-color: #075E54;
+  font-weight: bold;
+}
+.path-step.lost {
+  background: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+  font-weight: bold;
+}
+
+/* --- BLOCS DE PRÉVENTION --- */
+.prevention-blocks {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.prevention-card {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.3;
+}
+.prevention-card h4 {
+  margin: 0 0 5px 0;
+  font-size: 12px;
+}
+.prevention-card p {
+  margin: 0;
+}
+.cnin {
+  background-color: #e3f2fd;
+  border: 1px solid #2196f3;
+  color: #0d47a1;
+}
+.enfance {
+  background-color: #fff3e0;
+  border: 1px solid #ff9800;
+  color: #e65100;
+}
+
+/* Outils au-dessus du message (Loupe + Vocal) */
+.msg-tools {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+/* Badge Lecteur de vocaux */
+.vocal-badge {
+  background: #e0e0e0;
+  color: #333;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+.vocal-badge:hover {
+  background: #d0d0d0;
+}
