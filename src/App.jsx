@@ -5,16 +5,17 @@ import scenarios from './scenarios.json'
 function App() {
   const [currentScreen, setCurrentScreen] = useState('menu')
   const [selectedScenario, setSelectedScenario] = useState(null)
-  const [gameState, setGameState] = useState('playing')
+  const [gameState, setGameState] = useState('playing') // 'playing' | 'momo' | 'ended'
   const [loupeActive, setLoupeActive] = useState(false)
   const [codeSecret, setCodeSecret] = useState('')
   const [messages, setMessages] = useState([])
-  const [showChoices, setShowChoices] = useState(true)
   const [timeLeft, setTimeLeft] = useState(30)
   const [relanceSent, setRelanceSent] = useState(false)
   const [phoneModel, setPhoneModel] = useState('iphone')
-  const [lastChoice, setLastChoice] = useState('')
+  const [lastChoice, setLastChoice] = useState(null)
   const [currentTime, setCurrentTime] = useState('')
+  const [resultOutcome, setResultOutcome] = useState('lose') // 'win' | 'lose'
+  const [winReason, setWinReason] = useState('')
 
   useEffect(() => {
     const updateTime = () => {
@@ -36,7 +37,7 @@ function App() {
           clearInterval(timer);
           return 0;
         }
-        if (prev === 11 && !relanceSent) {
+        if (prev === 11 && !relanceSent && selectedScenario?.relanceMsg) {
           setRelanceSent(true);
           setMessages(prevMsgs => [...prevMsgs, { ...selectedScenario.relanceMsg, id: Date.now() }]);
         }
@@ -52,33 +53,61 @@ function App() {
     setMessages([scenario.initialMsg]);
     setCurrentScreen('game');
     setGameState('playing');
-    setShowChoices(true);
     setTimeLeft(30);
     setRelanceSent(false);
     setLoupeActive(false);
-    setLastChoice('');
+    setLastChoice(null);
+    setResultOutcome('lose');
+    setWinReason('');
   };
 
-  const handleChoice = (choiceText) => {
-    setLastChoice(choiceText);
-    setMessages([...messages, { id: Date.now(), type: 'sent', content: choiceText, time: '11:43' }]);
-    setShowChoices(false);
+  const handleChoice = (choice) => {
+    setLastChoice(choice);
     
-    if (choiceText.includes('paie') || choiceText.includes('envoie')) {
-      setTimeout(() => setGameState('momo'), 800);
-    } else {
-      setTimeout(() => setGameState('ended'), 1000);
+    // Message envoyé par le joueur
+    const userMsg = {
+      id: Date.now(),
+      type: 'sent',
+      content: choice.text,
+      time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+    };
+
+    setMessages(prev => [...prev, userMsg]);
+
+    if (choice.target === 'momo') {
+      setTimeout(() => {
+        setGameState('momo');
+      }, 700);
+    } else if (choice.target === 'win') {
+      setResultOutcome('win');
+      setWinReason(choice.winReason || 'Vous avez correctement identifié l’arnaque.');
+      setTimeout(() => {
+        setGameState('ended');
+      }, 1000);
+    } else if (choice.target === 'details') {
+      // Réponse de l'escroc demandant à nouveau l'argent
+      setTimeout(() => {
+        const replyMsg = {
+          id: Date.now() + 1,
+          type: 'received',
+          content: choice.reply || "Ne perdez pas de temps, l'offre expire bientôt !",
+          time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+        };
+        setMessages(prev => [...prev, replyMsg]);
+      }, 800);
     }
   };
 
   const handleCodeSubmit = (e) => {
     e.preventDefault();
+    setResultOutcome('lose');
     setGameState('ended');
   };
 
   const handleReplay = () => {
     setCurrentScreen('menu');
     setCodeSecret('');
+    setSelectedScenario(null);
   };
 
   const renderStatusBar = () => (
@@ -162,14 +191,14 @@ function App() {
                 <button className="momo-close" onClick={handleReplay}>✕</button>
               </div>
               <div className="momo-body">
-                <p className="momo-amount">Montant : <strong>5 000 FCFA</strong></p>
-                <p className="momo-recipient">Bénéficiaire : +229 01 97 XX XX XX</p>
+                <p className="momo-amount">Montant : <strong>{lastChoice?.amount || '5 000 FCFA'}</strong></p>
+                <p className="momo-recipient">Bénéficiaire : {selectedScenario?.initialMsg?.senderNumber || '+229 01 97 XX XX'}</p>
                 <form onSubmit={handleCodeSubmit}>
                   <label className="momo-label">Code secret à 4 chiffres :</label>
                   <input type="password" maxLength="4" className="momo-input" value={codeSecret} onChange={(e) => setCodeSecret(e.target.value)} placeholder="****" autoFocus />
-                  <button type="submit" className="momo-btn">Valider</button>
+                  <button type="submit" className="momo-btn">Valider le paiement</button>
                 </form>
-                <p className="momo-warning">⚠️ Ne donnez jamais votre code secret !</p>
+                <p className="momo-warning">⚠️ Ne donnez jamais votre code secret à un tiers !</p>
               </div>
             </div>
           )}
@@ -182,11 +211,11 @@ function App() {
                   <div className="header-top">
                     <button className="back-btn" onClick={handleReplay}>←</button>
                     <div className="profile-circle">
-                      <span className="profile-initial">I</span>
+                      <span className="profile-initial">{selectedScenario?.initialMsg?.senderName?.[0] || 'I'}</span>
                     </div>
                     <div className="contact-info">
-                      <span className="contact-name">Inconnu</span>
-                      <span className="contact-number">+229 01 97 XX XX XX</span>
+                      <span className="contact-name">{selectedScenario?.initialMsg?.senderName || 'Inconnu'}</span>
+                      <span className="contact-number">{selectedScenario?.initialMsg?.senderNumber || '+229 01 XX XX XX'}</span>
                     </div>
                     <span className={`timer-pill ${timeLeft <= 10 ? 'timer-danger' : ''}`}>{timeLeft}s</span>
                   </div>
@@ -199,8 +228,8 @@ function App() {
                     <div className={`message-bubble ${msg.type}`}>
                       {msg.type === 'received' && (
                         <div className="msg-tools">
-                          <button className="loupe-btn" onClick={() => setLoupeActive(!loupeActive)}>🔍</button>
-                          {msg.isVocal && <div className="vocal-badge">🎙️ 0:12 - Lire le texte</div>}
+                          <button className="loupe-btn" onClick={() => setLoupeActive(!loupeActive)} title="Inspecter les signaux suspects">🔍</button>
+                          {msg.isVocal && <div className="vocal-badge">🎙️ Message vocal</div>}
                         </div>
                       )}
                       <p>
@@ -215,41 +244,47 @@ function App() {
                 ))}
               </div>
 
-              {showChoices && gameState === 'playing' && (
+              {gameState === 'playing' && selectedScenario?.choices && (
                 <div className="choices-area">
-                  <button className="choice-btn" onClick={() => handleChoice(selectedScenario.id === 1 ? 'Je paie les 5000F' : "J'envoie l'argent vite")}>
-                    {selectedScenario.id === 1 ? 'Je paie les 5000F' : "J'envoie l'argent vite"}
-                  </button>
-                  <button className="choice-btn" onClick={() => handleChoice('Je demande des détails')}>Je demande des détails</button>
-                  <button className="choice-btn" onClick={() => handleChoice("J'appelle mon fils / la police")}>J'appelle pour vérifier</button>
+                  {selectedScenario.choices.map((choice) => (
+                    <button key={choice.id} className="choice-btn" onClick={() => handleChoice(choice)}>
+                      {choice.text}
+                    </button>
+                  ))}
                 </div>
               )}
 
               {gameState === 'ended' && (
                 <div className="end-screen">
                   <div className="score-summary">
-                    <h2>Fin de la simulation</h2>
-                    <p className="summary-text">Bilan de l'interaction</p>
+                    <h2>{resultOutcome === 'win' ? '🎉 Victoire !' : '❌ Piégé !'}</h2>
+                    <p className="summary-text">
+                      {resultOutcome === 'win' 
+                        ? (winReason || "Vous avez réussi à déjouer l'arnaque !") 
+                        : "Vous êtes tombé dans le piège de cette escroquerie."}
+                    </p>
                   </div>
                   
                   <div className="path-tree">
-                    <div className="path-step">💬 Message reçu</div>
+                    <div className="path-step">💬 Scenario : {selectedScenario?.titre}</div>
                     <div className="path-line"></div>
-                    <div className="path-step highlight-choice">👉 {lastChoice || 'Aucun choix'}</div>
+                    <div className="path-step highlight-choice">👉 Choix : {lastChoice?.text || 'Temps écoulé'}</div>
                     <div className="path-line"></div>
-                    <div className={`path-step ${lastChoice?.includes('paie') || lastChoice?.includes('envoie') ? 'highlight-choice' : ''}`}>
-                      {lastChoice?.includes('paie') || lastChoice?.includes('envoie') ? '📱 Écran Moov Money' : '🛑 Arrêt de la conversation'}
+                    <div className={`path-step ${resultOutcome === 'win' ? 'win' : 'lost'}`}>
+                      {resultOutcome === 'win' ? '✅ VICTOIRE (Arnaque déjouée)' : '❌ PERDU (Argent versé / Piège)'}
                     </div>
-                    <div className="path-line"></div>
-                    <div className="path-step lost">❌ PERDU (Arnaque subie)</div>
                   </div>
 
-                  <div className="signals-section">
-                    <h3>🔍 Signaux repérés</h3>
-                    <ul className="signals-list found"><li>✅ Numéro inconnu</li></ul>
-                    <h3>⚠️ Signaux manqués</h3>
-                    <ul className="signals-list missed"><li>❌ Urgence artificielle</li><li>❌ Demande d'argent via Mobile Money</li></ul>
-                  </div>
+                  {selectedScenario?.signals && (
+                    <div className="signals-section">
+                      <h3>🔍 Signaux suspects du scénario</h3>
+                      <ul className="signals-list found">
+                        {selectedScenario.signals.map(s => (
+                          <li key={s.id}>⚠️ {s.text}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                   <div className="prevention-blocks">
                     <div className="prevention-card cnin">
