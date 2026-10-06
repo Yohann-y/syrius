@@ -33,25 +33,36 @@ export interface HiddenSignal {
   explanation: string;
 }
 
-export interface CaseMessage {
-  id: string;
-  sender: string;
-  content: MessageContent;
-  /** Delay in seconds after previous message */
-  delaySeconds: number;
-  hiddenSignals?: HiddenSignal[];
+/** Player choice effect */
+export interface ChoiceEffects {
+  detectedSignals?: string[];
+  moneyLost?: number;
+  pressureIncrease?: number;
 }
 
 /** Player choice */
 export interface CaseChoice {
+  id: string;
   label: string;
-  /** next message id */
-  nextMessageId: string;
-  effects: {
-    detectedSignals?: string[];
-    moneyLost?: number;
-    pressureIncrease?: number;
-  };
+  /** Next target: message ID or ending ID */
+  nextId: string;
+  effects?: ChoiceEffects;
+}
+
+/** Message node in a scenario */
+export interface CaseMessage {
+  id: string;
+  sender: string;
+  content: MessageContent;
+  /** Delay in seconds after previous message for auto-advancing (0 for immediate) */
+  delaySeconds?: number;
+  hiddenSignals?: HiddenSignal[];
+  /** Message ID to auto-advance to (if no choices offered) */
+  nextMessageId?: string;
+  /** Choices offered at this message node */
+  choices?: CaseChoice[];
+  /** Ending ID triggered directly after this message if no choices */
+  endingId?: string;
 }
 
 /** Ending */
@@ -66,7 +77,7 @@ export interface CaseEnding {
 /** Full case definition */
 export interface Case {
   metadata: CaseMetadata;
+  initialMessageId: string;
   messages: CaseMessage[];
-  choices: CaseChoice[];
   endings: CaseEnding[];
 }

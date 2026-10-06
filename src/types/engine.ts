@@ -1,26 +1,37 @@
 // src/types/engine.ts
 
-import { CaseMessage, CaseChoice } from "./case";
+import { CaseMessage, CaseChoice, CaseEnding } from "./case";
 
 /**
- * State exposed by the game engine to the UI.
+ * State of the scenario engine (pure state machine).
  */
-export interface EngineState {
-  /** Messages currently displayed to the player */
+export interface GameState {
+  /** The case currently being played */
+  caseData: import("./case").Case;
+  /** Current active node ID (message ID or ending ID) */
+  currentNodeId: string;
+  /** Ordered list of node IDs visited during the play-through */
+  history: string[];
+  /** Messages displayed to the player in order */
   displayedMessages: CaseMessage[];
-  /** Choices available for the player */
+  /** Currently available choices for the player (empty if ended or auto-advancing) */
   availableChoices: CaseChoice[];
   /** Current pressure level */
   pressure: number;
   /** Total money lost by the player */
   moneyLost: number;
+  /** Signals detected/inspected by the player */
+  inspectedSignals: string[];
+  /** Final status of the game: "playing" | "ended" */
+  status: "playing" | "ended";
+  /** Current active ending if game has ended */
+  currentEnding?: CaseEnding;
 }
 
 /**
- * Events that the UI can send to the engine.
- * Discriminated union based on the `type` field.
+ * Events sent to the scenario engine.
  */
-export type EngineEvent =
-  | { type: "choose"; choiceLabel: string }
-  | { type: "inspectMessage"; messageId: string }
-  | { type: "tick"; deltaSeconds: number };
+export type GameEvent =
+  | { type: "CHOOSE"; choiceId: string }
+  | { type: "INSPECT_MESSAGE"; messageId: string }
+  | { type: "ADVANCE" };
