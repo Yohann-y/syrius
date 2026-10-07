@@ -629,14 +629,16 @@
 
 .status-icons {
   display: flex;
-  gap: 5px;
+  gap: 6px;
   align-items: center;
   font-size: 13px;
 }
 
-.status-signal { font-size: 10px; letter-spacing: -1px; }
-.status-wifi { font-size: 12px; }
-.status-battery { font-size: 14px; }
+.status-signal, .status-wifi, .status-battery {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /* ===== WhatsApp-style Enhanced Header ===== */
 .whatsapp-header {
@@ -834,9 +836,23 @@
 .signals-list li {
   font-size: 14px;
   padding: 6px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
 }
 
-.signals-list.found li { color: var(--ios-green); }
+.ending-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.ending-icon svg {
+  width: 48px;
+  height: 48px;
+}
+
+.signals-list.found li { color: #333; }
 .signals-list.missed li { color: var(--ios-red); }
 
 .path-step.highlight-choice {

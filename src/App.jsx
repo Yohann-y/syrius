@@ -2,6 +2,78 @@ import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import scenarios from './scenarios.json'
 
+// SVG Icon components
+const ShieldIcon = () => (
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    <path d="m9 12 2 2 4-4" />
+  </svg>
+);
+
+const SearchIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8" />
+    <path d="m21 21-4.3-4.3" />
+  </svg>
+);
+
+const PlayIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+    <polygon points="5 3 19 12 5 21 5 3" />
+  </svg>
+);
+
+const PauseIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+    <rect x="6" y="4" width="4" height="16" />
+    <rect x="14" y="4" width="4" height="16" />
+  </svg>
+);
+
+const ArrowRightIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 12h14" />
+    <path d="m12 5 7 7-7 7" />
+  </svg>
+);
+
+const BackIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m15 18-6-6 6-6" />
+  </svg>
+);
+
+const CheckCircleIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#34c759" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+    <polyline points="22 4 12 14.01 9 11.01" />
+  </svg>
+);
+
+const AlertTriangleIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff9500" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z" />
+    <line x1="12" y1="9" x2="12" y2="13" />
+    <line x1="12" y1="17" x2="12.01" y2="17" />
+  </svg>
+);
+
+const XCircleIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="15" y1="9" x2="9" y2="15" />
+    <line x1="9" y1="9" x2="15" y2="15" />
+  </svg>
+);
+
+const LightbulbIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffcc00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 18h6" />
+    <path d="M10 22h4" />
+    <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.9 14" />
+  </svg>
+);
+
 function App() {
   const [currentScreen, setCurrentScreen] = useState('menu')
   const [selectedScenario, setSelectedScenario] = useState(null)
@@ -79,7 +151,6 @@ function App() {
   };
 
   const handleChoiceSelect = (choice) => {
-    // 1. Append player choice message
     const playerMsg = {
       id: `user_${Date.now()}`,
       type: 'sent',
@@ -92,7 +163,6 @@ function App() {
 
     const nextId = choice.nextMsgId;
 
-    // Check if nextId is a storyNode
     if (selectedScenario.storyNodes && selectedScenario.storyNodes[nextId]) {
       const node = selectedScenario.storyNodes[nextId];
 
@@ -106,7 +176,6 @@ function App() {
         return;
       }
 
-      // Add received message after short typing delay
       setTimeout(() => {
         setCurrentMsg(node);
         setMessages(prev => [...prev, node]);
@@ -118,7 +187,6 @@ function App() {
       }, 700);
 
     } else if (selectedScenario.endings && selectedScenario.endings[nextId]) {
-      // It's a direct ending
       const ending = selectedScenario.endings[nextId];
       setTimeout(() => {
         setCurrentEnding(ending);
@@ -133,10 +201,9 @@ function App() {
       const ending = selectedScenario.endings[momoDetails.nextMsgId];
       setCurrentEnding(ending);
     } else {
-      // Default lose ending if not specified
       setCurrentEnding({
         type: 'lose',
-        title: '❌ Transactions effectuée - Argent Perdu !',
+        title: 'Transactions effectuée - Argent Perdu !',
         summary: "Vous avez validé le transfert Moov/MTN. L'escroc a récupéré les fonds immédiatement.",
         signalsLearned: ["Ne validez jamais de transfert d'argent sans vérification indépendante"]
       });
@@ -154,13 +221,38 @@ function App() {
     setPlayingAudioId(null);
   };
 
+const WifiIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 13a10 10 0 0 1 14 0" />
+    <path d="M8.5 16.5a5 5 0 0 1 7 0" />
+    <path d="M12 20h.01" />
+  </svg>
+);
+
+const BatteryIcon = () => (
+  <svg width="20" height="12" viewBox="0 0 24 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="1" y="1" width="18" height="10" rx="3" />
+    <rect x="3" y="3" width="11" height="6" rx="1.5" fill="currentColor" />
+    <path d="M21 4v4" strokeWidth="2" />
+  </svg>
+);
+
+const CellularSignalIcon = () => (
+  <svg width="14" height="12" viewBox="0 0 18 12" fill="currentColor">
+    <rect x="0" y="8" width="3" height="4" rx="0.5" />
+    <rect x="5" y="5" width="3" height="7" rx="0.5" />
+    <rect x="10" y="2" width="3" height="10" rx="0.5" />
+    <rect x="15" y="0" width="3" height="12" rx="0.5" />
+  </svg>
+);
+
   const renderStatusBar = () => (
     <div className="status-bar">
       <span className="status-time">{currentTime}</span>
       <div className="status-icons">
-        <span className="status-signal">●●●●</span>
-        <span className="status-wifi">📶</span>
-        <span className="status-battery">🔋</span>
+        <span className="status-signal"><CellularSignalIcon /></span>
+        <span className="status-wifi"><WifiIcon /></span>
+        <span className="status-battery"><BatteryIcon /></span>
       </div>
     </div>
   );
@@ -191,7 +283,9 @@ function App() {
             {renderStatusBar()}
             {renderNotchOrIsland()}
             <div className="menu-header">
-              <div className="shield-icon">🛡️</div>
+              <div className="shield-icon">
+                <ShieldIcon />
+              </div>
               <h1>SYRIUS</h1>
               <p className="tagline">Moteur de Simulation & Prévention des Arnaques</p>
             </div>
@@ -202,7 +296,7 @@ function App() {
                     <span className="scen-cat">{scen.categorie}</span>
                     <span className="scen-title">{scen.titre}</span>
                   </div>
-                  <span className="scen-arrow">→</span>
+                  <span className="scen-arrow"><ArrowRightIcon /></span>
                 </button>
               ))}
             </div>
@@ -242,7 +336,7 @@ function App() {
                   <input type="password" maxLength="4" className="momo-input" value={codeSecret} onChange={(e) => setCodeSecret(e.target.value)} placeholder="****" autoFocus required />
                   <button type="submit" className="momo-btn">Confirmer le Transfert</button>
                 </form>
-                <p className="momo-warning">⚠️ Ne communiquez jamais votre code secret par téléphone ou message !</p>
+                <p className="momo-warning">Ne communiquez jamais votre code secret par téléphone ou message !</p>
               </div>
             </div>
           )}
@@ -253,7 +347,7 @@ function App() {
               {gameState !== 'ended' && (
                 <div className="app-header whatsapp-header">
                   <div className="header-top">
-                    <button className="back-btn" onClick={handleReplay}>←</button>
+                    <button className="back-btn" onClick={handleReplay}><BackIcon /></button>
                     <div className="profile-circle">
                       <span className="profile-initial">{currentMsg?.senderName?.[0] || 'I'}</span>
                     </div>
@@ -261,7 +355,9 @@ function App() {
                       <span className="contact-name">{currentMsg?.senderName || selectedScenario?.initialMsg?.senderName}</span>
                       <span className="contact-number">{currentMsg?.senderNumber || selectedScenario?.initialMsg?.senderNumber}</span>
                     </div>
-                    <button className="loupe-btn" onClick={() => setLoupeActive(!loupeActive)} title="Activer la loupe de détection">🔍</button>
+                    <button className="loupe-btn" onClick={() => setLoupeActive(!loupeActive)} title="Activer la loupe de détection">
+                      <SearchIcon />
+                    </button>
                   </div>
                 </div>
               )}
@@ -276,7 +372,8 @@ function App() {
                             className={`vocal-play-btn ${playingAudioId === msg.id ? 'playing' : ''}`}
                             onClick={() => handlePlayVoice(msg.id, msg.audioText || (msg.parts ? msg.parts.map(p => p.text).join('') : msg.content))}
                           >
-                            {playingAudioId === msg.id ? '⏸️ Suspendre' : '▶️ Écouter le message vocal'}
+                            {playingAudioId === msg.id ? <PauseIcon /> : <PlayIcon />}
+                            <span>{playingAudioId === msg.id ? 'Suspendre' : 'Écouter le message vocal'}</span>
                           </button>
                         </div>
                       )}
@@ -306,12 +403,17 @@ function App() {
               {gameState === 'ended' && currentEnding && (
                 <div className="end-screen">
                   <div className="score-summary">
-                    <h2>{currentEnding.type === 'win' ? '🎉' : currentEnding.type === 'partial' ? '⚠️' : '❌'} {currentEnding.title}</h2>
+                    <div className="ending-icon">
+                      {currentEnding.type === 'win' && <CheckCircleIcon />}
+                      {currentEnding.type === 'partial' && <AlertTriangleIcon />}
+                      {currentEnding.type === 'lose' && <XCircleIcon />}
+                    </div>
+                    <h2>{currentEnding.title}</h2>
                     <p className="summary-text">{currentEnding.summary}</p>
                   </div>
                   
                   <div className="path-tree">
-                    <h4>📜 Parcours de votre simulation :</h4>
+                    <h4>Parcours de votre simulation :</h4>
                     {historyNodes.map((nodeText, idx) => (
                       <div key={idx} className="path-node-wrapper">
                         <div className={`path-step ${nodeText.startsWith('Choix :') ? 'highlight-choice' : ''}`}>
@@ -324,10 +426,13 @@ function App() {
 
                   {currentEnding.signalsLearned && (
                     <div className="signals-section">
-                      <h3>🔍 Leçons & Signaux Clés :</h3>
+                      <h3>Leçons & Signaux Clés :</h3>
                       <ul className="signals-list found">
                         {currentEnding.signalsLearned.map((signal, i) => (
-                          <li key={i}>💡 {signal}</li>
+                          <li key={i}>
+                            <LightbulbIcon />
+                            <span>{signal}</span>
+                          </li>
                         ))}
                       </ul>
                     </div>
@@ -335,11 +440,11 @@ function App() {
 
                   <div className="prevention-blocks">
                     <div className="prevention-card cnin">
-                      <h4>🛡️ Victime d'escroquerie ?</h4>
+                      <h4>Victime d'escroquerie ?</h4>
                       <p>Signalez au <strong>CNIN</strong> (Centre National de Traitement des Incidents)</p>
                     </div>
                     <div className="prevention-card enfance">
-                      <h4>👶 Assistance Mineurs ?</h4>
+                      <h4>Assistance Mineurs ?</h4>
                       <p>Appelez le numéro gratuit <strong>Allô Enfance 138</strong></p>
                     </div>
                   </div>

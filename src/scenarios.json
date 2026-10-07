@@ -2,7 +2,7 @@
   {
     "id": 1,
     "titre": "Concours des Douanes",
-    "categorie": "💵 Argent",
+    "categorie": "Argent",
     "description": "Un soi-disant officier des douanes vous contacte au sujet d'un concours...",
     "initialMsg": {
       "id": "d_start",
@@ -77,7 +77,7 @@
         "isVocal": true,
         "audioText": "Écoutez-moi bien ! Vous remettez en cause l'autorité de la Douane ? C'est une procédure d'urgence exceptionnelle accordée aux candidats régionaux ! Soit vous payez dans 3 minutes, soit votre candidature est définitivement annulée et rejetée pour insubordination !",
         "parts": [
-          { "text": "⚠️ Écoutez la note vocale du Capitaine. Il devient agressif et insistant.", "suspect": true }
+          { "text": "Écoutez la note vocale du Capitaine. Il devient agressif et insistant.", "suspect": true }
         ],
         "choices": [
           {
@@ -141,7 +141,7 @@
       "d_end_win_verify": {
         "id": "d_end_win_verify",
         "type": "win",
-        "title": "🎉 Victoire Parfaite !",
+        "title": "Victoire Parfaite !",
         "summary": "Vous avez vérifié sur le portail officiel du Gouvernement. Aucun paiement par Mobile Money n'est jamais requis pour les concours publics.",
         "signalsLearned": [
           "Jamais de frais de concours publics via numéro Moov/MTN d'un particulier",
@@ -151,7 +151,7 @@
       "d_end_win_call": {
         "id": "d_end_win_call",
         "type": "win",
-        "title": "🎉 Arnaque Déjouée avec Brio !",
+        "title": "Arnaque Déjouée avec Brio !",
         "summary": "En appelant le standard officiel de la Douane, ils vous ont confirmé qu'aucun 'Capitaine Mensah' ne réclame d'argent par téléphone.",
         "signalsLearned": [
           "Toujours passer par le standard officiel trouvé de façon indépendante"
@@ -160,7 +160,7 @@
       "d_end_win_block": {
         "id": "d_end_win_block",
         "type": "win",
-        "title": "🛡️ Réflexe de Protection Activé !",
+        "title": "Réflexe de Protection Activé !",
         "summary": "Vous avez identifié l'agressivité et l'urgence artificielle. Vous avez bloqué l'escroc sans rien dépenser.",
         "signalsLearned": [
           "L'urgence et l'agressivité sont les armes principales des arnaqueurs"
@@ -169,7 +169,7 @@
       "d_end_partial_stop": {
         "id": "d_end_partial_stop",
         "type": "partial",
-        "title": "⚠️ Prise de Conscience à Temps !",
+        "title": "Prise de Conscience à Temps !",
         "summary": "L'escroc tentait de vous soutirer 15 000 FCFA supplémentaires. Vous vous êtes arrêté juste à temps avant de payer.",
         "signalsLearned": [
           "Une arnaque ne s'arrête jamais après le premier paiement"
@@ -178,7 +178,7 @@
       "d_end_lose_scammed": {
         "id": "d_end_lose_scammed",
         "type": "lose",
-        "title": "❌ Victime d'Escroquerie (5 000 FCFA perdus)",
+        "title": "Victime d'Escroquerie (5 000 FCFA perdus)",
         "summary": "Vous avez transféré 5 000 FCFA à un numéro privé. L'escroc s'est volatilisé et votre numéro a été bloqué.",
         "signalsLearned": [
           "Le Mobile Money vers un particulier pour un concours public est TOUJOURS une arnaque"
@@ -187,7 +187,7 @@
       "d_end_lose_heavy": {
         "id": "d_end_lose_heavy",
         "type": "lose",
-        "title": "❌ Grosse Perte Financière (15 000 FCFA perdus)",
+        "title": "Grosse Perte Financière (15 000 FCFA perdus)",
         "summary": "En cédant aux exigences successives, vous avez perdu 15 000 FCFA. Les escrocs profitent de l'engrenage psychologique.",
         "signalsLearned": [
           "Méfiez-vous de l'escalade des frais réclamés en urgence"
@@ -198,7 +198,7 @@
   {
     "id": 2,
     "titre": "Faux Accident & Urgence Familiale",
-    "categorie": "🚨 Urgence",
+    "categorie": "Urgence",
     "description": "Un appel / message vocal désespéré prétend que votre enfant est à l'hôpital...",
     "initialMsg": {
       "id": "a_start",
@@ -209,7 +209,7 @@
       "isVocal": true,
       "audioText": "Allo Maman ?! C'est moi... j'ai eu un grave accident de taxi en rentrant des cours ! Mon téléphone est cassé... Le médecin de garde refuse de m'opérer si on n'envoie pas 100 000 FCFA tout de suite sur son compte Moov Money ! S'il te plaît dépêche-toi, ne préviens pas Papa il va paniquer !",
       "parts": [
-        { "text": "🚨 MESSAGE VOCAL D'URGENCE REÇU. ", "suspect": true },
+        { "text": "MESSAGE VOCAL D'URGENCE REÇU. ", "suspect": true },
         { "text": "Écoutez la note vocale d'urgence ci-dessus.", "suspect": false }
       ],
       "choices": [
@@ -240,7 +240,7 @@
         "isVocal": true,
         "audioText": "Ici le Dr. Koffi aux urgences de la clinique Sainte-Rita. Votre fils a un traumatisme grave. La politique de l'établissement exige une avance d'urgence de 100 000 FCFA pour le bloc opératoire. Envoyez sur le numéro du brancardier +229 01 64 88 99 immédiatement !",
         "parts": [
-          { "text": "👨‍⚕️ Le prétendu médecin prend le relais vocablement. Écoutez le message.", "suspect": true }
+          { "text": "Le prétendu médecin prend le relais vocablement. Écoutez le message.", "suspect": true }
         ],
         "choices": [
           {
@@ -299,7 +299,7 @@
       "a_end_win_call_son": {
         "id": "a_end_win_call_son",
         "type": "win",
-        "title": "🎉 Réflexe Salvateur !",
+        "title": "Réflexe Salvateur !",
         "summary": "Vous avez appelé votre fils sur son vrai numéro. Il était sagement assis en classe. L'escroc a utilisé une voix imitiée pour vous paniquer.",
         "signalsLearned": [
           "Toujours vérifier auprès du vrai numéro de votre proche",
@@ -309,7 +309,7 @@
       "a_end_win_school": {
         "id": "a_end_win_school",
         "type": "win",
-        "title": "🎉 Enquête Rapide Réussie !",
+        "title": "Enquête Rapide Réussie !",
         "summary": "Le surveillant de l'école vous a confirmé que votre enfant est bien présent en cours. L'arnaque est déjouée.",
         "signalsLearned": [
           "Contacter une institution tierce (école, travail) pour vérifier la présence"
@@ -318,7 +318,7 @@
       "a_end_win_father": {
         "id": "a_end_win_father",
         "type": "win",
-        "title": "🎉 Union Familiale Victorieuse !",
+        "title": "Union Familiale Victorieuse !",
         "summary": "Le père vous a rappelé qu'il venait de déposer votre fils à son activité 10 minutes plus tôt. La consigne 'ne préviens personne' était un signal majeur.",
         "signalsLearned": [
           "L'isolement ('ne dis rien à personne') est le drapeau rouge n°1"
@@ -327,7 +327,7 @@
       "a_end_lose_100k": {
         "id": "a_end_lose_100k",
         "type": "lose",
-        "title": "❌ Énorme Préjudice Financier & Émotionnel",
+        "title": "Énorme Préjudice Financier & Émotionnel",
         "summary": "Vous avez envoyé 100 000 FCFA sous le coup de la panique. Quand votre fils est rentré à 17h, vous avez compris le cauchemar.",
         "signalsLearned": [
           "Ne JAMAIS transférer d'argent sous l'emprise de la panique émotionnelle sans double vérification"
@@ -338,7 +338,7 @@
   {
     "id": 3,
     "titre": "Offre d'Emploi TikTok / Faux Partenariat",
-    "categorie": "💼 Emploi",
+    "categorie": "Emploi",
     "description": "Une offre de travail en ligne trop belle pour être vraie, payée par likage de vidéos...",
     "initialMsg": {
       "id": "t_start",
@@ -349,7 +349,7 @@
       "isVocal": true,
       "audioText": "Bonjour ! Je suis Sophie, responsable RH chez TikTok Media Partners. Nous recrutons des évaluateurs de contenus à domicile. Il suffit de liker des vidéos pour gagner 15 000 FCFA par jour. Pour valider votre inscription et recevoir vos 2 000 FCFA de bienvenue, répondez oui !",
       "parts": [
-        { "text": "💼 Offre d'emploi à domicile lucrative. ", "suspect": false },
+        { "text": "Offre d'emploi à domicile lucrative. ", "suspect": false },
         { "text": "15 000 FCFA / jour pour liker des vidéos.", "suspect": true },
         { "text": " Écoutez la note vocale du recruteur.", "suspect": false }
       ],
@@ -408,7 +408,7 @@
         "isVocal": true,
         "audioText": "Ah vous posez trop de questions ! Nous sommes une plateforme internationale enregistrée à Singapour. Les contrats se signent uniquement après la période d'essai VIP. Si vous hésitez, les 50 places restantes vont être données à d'autres candidats !",
         "parts": [
-          { "text": "⚠️ Écoutez la réponse vocale de la recruteuse sur l'absence de contrat.", "suspect": true }
+          { "text": "Écoutez la réponse vocale de la recruteuse sur l'absence de contrat.", "suspect": true }
         ],
         "choices": [
           {
@@ -462,7 +462,7 @@
       "t_end_win_instant": {
         "id": "t_end_win_instant",
         "type": "win",
-        "title": "🎉 Vigilance Instantanée !",
+        "title": "Vigilance Instantanée !",
         "summary": "Vous connaissez la règle : des gains mirobolants pour liker des vidéos sur WhatsApp est le schéma d'arnaque ponzi le plus répandu.",
         "signalsLearned": [
           "Rémunération irréaliste pour un travail sans qualification",
@@ -472,7 +472,7 @@
       "t_end_win_report": {
         "id": "t_end_win_report",
         "type": "win",
-        "title": "🎉 Citoyen Avisé !",
+        "title": "Citoyen Avisé !",
         "summary": "L'absence de contrat légal et l'esquive de l'IFU ont confirmé le piège. Votre signalement protège d'autres victimes.",
         "signalsLearned": [
           "Exiger toujours un contrat et des identifiants d'entreprise légaux"
@@ -481,7 +481,7 @@
       "t_end_win_firm": {
         "id": "t_end_win_firm",
         "type": "win",
-        "title": "🎉 Règle d'Or Respectée !",
+        "title": "Règle d'Or Respectée !",
         "summary": "Vous vous êtes rappelé de la règle fondamentale : 'On ne paie jamais pour travailler'. Vous avez sauvé vos 10 000 FCFA.",
         "signalsLearned": [
           "Un vrai employeur ne demande JAMAIS de dépôt de garantie ni d'achat de statut VIP"
@@ -490,7 +490,7 @@
       "t_end_lose_pyramid": {
         "id": "t_end_lose_pyramid",
         "type": "lose",
-        "title": "❌ Piégé dans l'Arnaque aux Tâches (10 000 FCFA perdus)",
+        "title": "Piégé dans l'Arnaque aux Tâches (10 000 FCFA perdus)",
         "summary": "Après votre virement, ils vous auraient demandé 50 000 FCFA de 'VIP 2' pour retirer vos gains imaginaires. C'est la fraude pyramidale.",
         "signalsLearned": [
           "Les prétendus gains affichés sur l'application sont fictifs et verrouillés"
