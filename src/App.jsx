@@ -495,6 +495,56 @@ const CellularSignalIcon = () => (
 
           {/* ÉCRAN DE CHAT & FIN */}
           {gameState !== 'momo' && (
+            currentMsg?.isCall ? (
+              <section className="phone-call-screen" aria-label="Simulation d’appel">
+                <header className="call-screen-header">
+                  <button className="call-exit-btn" onClick={handleReplay} aria-label="Quitter l’appel">
+                    <BackIcon />
+                  </button>
+                  <span>APPEL SIMULÉ</span>
+                  <span className="call-secure-mark" aria-hidden="true">●</span>
+                </header>
+                <div className="call-screen-content">
+                  <span className="call-status">Appel entrant</span>
+                  <div className="caller-avatar-wrap">
+                    <div className="caller-avatar">
+                      {(currentMsg.senderName || 'Inconnu').trim()[0].toUpperCase()}
+                    </div>
+                  </div>
+                  <h1 className="caller-name">{currentMsg.senderName || 'Numéro inconnu'}</h1>
+                  <p className="caller-number">{currentMsg.senderNumber || 'Numéro masqué'}</p>
+                  <p className="call-description">Un appelant vous contacte. Écoutez son message avant de choisir votre réaction.</p>
+                  <button
+                    className={`call-listen-btn ${playingAudioId === currentMsg.id ? 'playing' : ''}`}
+                    onClick={() => handlePlayVoice(currentMsg.id, currentMsg.audioText || '')}
+                    aria-label={playingAudioId === currentMsg.id ? 'Arrêter l’appel simulé' : 'Écouter l’appel simulé'}
+                    aria-pressed={playingAudioId === currentMsg.id}
+                  >
+                    <span className="call-listen-icon">
+                      {playingAudioId === currentMsg.id ? <PauseIcon /> : <PlayIcon />}
+                    </span>
+                    <span>{playingAudioId === currentMsg.id ? 'Arrêter l’appel' : 'Écouter l’appel'}</span>
+                  </button>
+                  {voiceError?.msgId === currentMsg.id && (
+                    <p className="vocal-error call-voice-error" role="status">{voiceError.message}</p>
+                  )}
+                </div>
+                {gameState === 'playing' && currentMsg.choices && (
+                  <div className="call-actions">
+                    <h2>Que faites-vous ?</h2>
+                    {currentMsg.choices.map((choice, index) => (
+                      <button
+                        key={choice.id}
+                        className={`call-choice-btn ${index === 0 ? 'call-choice-primary' : ''}`}
+                        onClick={() => handleChoiceSelect(choice)}
+                      >
+                        {choice.text}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </section>
+            ) : (
             <>
               <div className="app-header whatsapp-header">
                 <div className="header-top">
@@ -516,28 +566,7 @@ const CellularSignalIcon = () => (
                 {messages.map((msg) => (
                   <div key={msg.id} className={`message ${msg.type} ${msg.isVocal ? 'vocal-message' : ''}`}>
                     <div className={`message-bubble ${msg.type} ${msg.isVocal ? 'vocal-bubble' : ''}`}>
-                      {msg.type === 'received' && msg.isCall ? (
-                        <div className="call-card">
-                          <div className="call-card-heading">
-                            <span className="call-icon" aria-hidden="true">☎</span>
-                            <div>
-                              <strong>Appel entrant</strong>
-                              <span>Simulation d’appel téléphonique</span>
-                            </div>
-                          </div>
-                          <button
-                            className={`call-listen-btn ${playingAudioId === msg.id ? 'playing' : ''}`}
-                            onClick={() => handlePlayVoice(msg.id, msg.audioText || '')}
-                            aria-label={playingAudioId === msg.id ? 'Arrêter l’appel simulé' : 'Écouter l’appel simulé'}
-                          >
-                            {playingAudioId === msg.id ? <PauseIcon /> : <PlayIcon />}
-                            {playingAudioId === msg.id ? 'Arrêter l’appel' : 'Écouter l’appel'}
-                          </button>
-                          {voiceError?.msgId === msg.id && (
-                            <p className="vocal-error" role="status">{voiceError.message}</p>
-                          )}
-                        </div>
-                      ) : msg.type === 'received' && msg.isVocal ? (
+                      {msg.type === 'received' && msg.isVocal ? (
                         <div className="vocal-player">
                           <button
                             className={`vocal-play-btn ${playingAudioId === msg.id ? 'playing' : ''}`}
@@ -590,6 +619,7 @@ const CellularSignalIcon = () => (
               )}
 
             </>
+            )
           )}
           {renderHomeIndicator()}
         </div>
