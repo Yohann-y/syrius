@@ -1,18 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --ios-blue: #0b57d0;
+  --ui-primary: #087e75;
+  --ui-primary-dark: #075e58;
+  --ui-primary-soft: #e1f2ef;
+  --ui-background: #f3f6f5;
+  --ui-surface: #ffffff;
+  --ui-text: #1b2928;
+  --ui-muted: #687876;
+  --ui-border: #dce5e3;
+  --ui-danger: #ba1a1a;
+  --ios-blue: var(--ui-primary);
   --ios-green: #16825d;
-  --ios-red: #ba1a1a;
-  --ios-gray: #5f6368;
-  --ios-light-gray: #f3f4f6;
-  --ios-dark: #191c20;
-  --ios-separator: #d9dce1;
+  --ios-red: var(--ui-danger);
+  --ios-gray: var(--ui-muted);
+  --ios-light-gray: var(--ui-background);
+  --ios-dark: var(--ui-text);
+  --ios-separator: var(--ui-border);
   --bg-gradient: linear-gradient(135deg, #13151a 0%, #1e293b 100%);
-  
-  --whatsapp-bg: #e5ddd5;
-  --whatsapp-sent: #dcf8c6;
-  --whatsapp-received: #ffffff;
+  --whatsapp-bg: #edf2f0;
+  --whatsapp-sent: #d9f1e7;
+  --whatsapp-received: var(--ui-surface);
 }
 
 body {

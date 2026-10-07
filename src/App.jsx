@@ -94,7 +94,7 @@ const LightbulbIcon = () => (
 );
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState('menu')
+  const [currentScreen, setCurrentScreen] = useState('intro')
   const [selectedScenario, setSelectedScenario] = useState(null)
   const [currentMsg, setCurrentMsg] = useState(null)
   const [gameState, setGameState] = useState('playing') // 'playing' | 'momo' | 'ended'
@@ -316,36 +316,143 @@ const CellularSignalIcon = () => (
     <div className="home-indicator"></div>
   );
 
+  const renderEndScreen = () => currentEnding && (
+    <div className="end-screen">
+      <div className="score-summary">
+        <div className="ending-icon">
+          {currentEnding.type === 'win' && <CheckCircleIcon />}
+          {currentEnding.type === 'partial' && <AlertTriangleIcon />}
+          {currentEnding.type === 'lose' && <XCircleIcon />}
+        </div>
+        <h2>{currentEnding.title}</h2>
+        <p className="summary-text">{currentEnding.summary}</p>
+      </div>
+
+      <div className="path-tree">
+        <h4>Parcours de votre simulation :</h4>
+        {historyNodes.map((nodeText, idx) => (
+          <div key={idx} className="path-node-wrapper">
+            <div className={`path-step ${nodeText.startsWith('Choix :') ? 'highlight-choice' : ''}`}>
+              {nodeText}
+            </div>
+            {idx < historyNodes.length - 1 && <div className="path-line"></div>}
+          </div>
+        ))}
+      </div>
+
+      {currentEnding.signalsLearned && (
+        <div className="signals-section">
+          <h3>Leçons & Signaux Clés :</h3>
+          <ul className="signals-list found">
+            {currentEnding.signalsLearned.map((signal, i) => (
+              <li key={i}>
+                <LightbulbIcon />
+                <span>{signal}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div className="prevention-blocks">
+        <div className="prevention-card cnin">
+          <h4>Victime d'escroquerie ?</h4>
+          <p>Signalez au <strong>CNIN</strong> (Centre National de Traitement des Incidents)</p>
+        </div>
+        <div className="prevention-card enfance">
+          <h4>Assistance Mineurs ?</h4>
+          <p>Appelez le numéro gratuit <strong>Allô Enfance 138</strong></p>
+        </div>
+      </div>
+
+      <div className="end-buttons">
+        <button className="choice-btn replay-btn" onClick={handleReplay}>Recommencer un scénario</button>
+      </div>
+    </div>
+  );
+
+  if (currentScreen === 'intro') {
+    return (
+      <main className="landing-page intro-page">
+        <div className="landing-glow landing-glow-one" aria-hidden="true"></div>
+        <div className="landing-glow landing-glow-two" aria-hidden="true"></div>
+        <section className="landing-content intro-content">
+          <div className="intro-emblem">
+            <ShieldIcon />
+          </div>
+          <p className="intro-brand">SYRIUS</p>
+          <p className="intro-kicker">APPRENDRE À SE PROTÉGER</p>
+          <h1 className="intro-message">
+            CETTE APPLICATION A ÉTÉ CRÉÉE POUR APPRENDRE À
+            {' '}<span>RECONNAÎTRE UNE ARNAQUE</span>
+            {' '}AVANT D’EN ÊTRE VICTIME
+          </h1>
+          <p className="intro-description">Entraînez-vous à repérer les signes d’une arnaque dans des situations réalistes.</p>
+          <div className="intro-highlights" aria-label={`${scenarios.length} simulations disponibles`}>
+            <span className="intro-highlight-dot" aria-hidden="true"></span>
+            {scenarios.length} simulations pour apprendre à votre rythme
+          </div>
+        </section>
+        <div className="intro-actions">
+          <button className="intro-start-btn" onClick={() => setCurrentScreen('menu')}>
+            <span>Commencer</span>
+            <span className="intro-button-icon"><ArrowRightIcon /></span>
+          </button>
+          <p className="intro-action-caption">Aucune expérience nécessaire</p>
+        </div>
+      </main>
+    );
+  }
+
   // --- RENDU : MENU PRINCIPAL ---
   if (currentScreen === 'menu') {
     return (
-      <div className="app-container">
-        <div className="phone-wrapper">
-          <div className="phone-frame menu-frame skin-samsung">
-            {renderStatusBar()}
-            <div className="hole-punch" aria-hidden="true"></div>
-            <div className="menu-header">
-              <div className="shield-icon">
-                <ShieldIcon />
-              </div>
-              <h1>SYRIUS</h1>
-              <p className="tagline">Moteur de Simulation & Prévention des Arnaques</p>
-            </div>
-            <div className="menu-list">
-              {scenarios.map(scen => (
-                <button key={scen.id} className="scenario-btn" onClick={() => startScenario(scen)}>
-                  <div className="scen-info">
-                    <span className="scen-cat">{scen.categorie}</span>
-                    <span className="scen-title">{scen.titre}</span>
-                  </div>
-                  <span className="scen-arrow"><ArrowRightIcon /></span>
-                </button>
-              ))}
-            </div>
-            {renderHomeIndicator()}
+      <main className="landing-page menu-page">
+        <div className="landing-glow landing-glow-one" aria-hidden="true"></div>
+        <header className="menu-header">
+          <div className="shield-icon">
+            <ShieldIcon />
           </div>
-        </div>
-      </div>
+          <h1>SYRIUS</h1>
+          <p className="tagline">Moteur de Simulation & Prévention des Arnaques</p>
+        </header>
+        <section className="scenario-section" aria-labelledby="scenario-heading">
+          <div className="scenario-heading">
+            <div>
+              <h2 id="scenario-heading">Choisissez une simulation</h2>
+              <p>Quelle situation souhaitez-vous apprendre à reconnaître ?</p>
+            </div>
+          </div>
+          <div className="menu-list">
+            {scenarios.map(scen => (
+              <button key={scen.id} className="scenario-btn" onClick={() => startScenario(scen)}>
+                <div className={`scenario-icon scenario-icon-${scen.categorie.toLowerCase()}`} aria-hidden="true">
+                  {scen.categorie === 'Argent' ? '€' : scen.categorie === 'Urgence' ? '!' : '↗'}
+                </div>
+                <div className="scen-info">
+                  <span className="scen-cat">{scen.categorie}</span>
+                  <span className="scen-title">{scen.titre}</span>
+                </div>
+                <span className="scen-arrow"><ArrowRightIcon /></span>
+              </button>
+            ))}
+          </div>
+          <p className="menu-footer">Prenez le temps de vérifier. Ne cédez jamais à la pression.</p>
+        </section>
+      </main>
+    );
+  }
+
+  if (gameState === 'ended') {
+    return (
+      <main className="results-page">
+        <header className="results-header">
+          <span className="results-brand-mark"><ShieldIcon /></span>
+          <span>SYRIUS</span>
+          <span className="results-label">Bilan de la simulation</span>
+        </header>
+        {renderEndScreen()}
+      </main>
     );
   }
 
@@ -380,23 +487,21 @@ const CellularSignalIcon = () => (
           {/* ÉCRAN DE CHAT & FIN */}
           {gameState !== 'momo' && (
             <>
-              {gameState !== 'ended' && (
-                <div className="app-header whatsapp-header">
-                  <div className="header-top">
-                    <button className="back-btn" onClick={handleReplay}><BackIcon /></button>
-                    <div className="profile-circle">
-                      <span className="profile-initial">{currentMsg?.senderName?.[0] || 'I'}</span>
-                    </div>
-                    <div className="contact-info">
-                      <span className="contact-name">{currentMsg?.senderName || selectedScenario?.initialMsg?.senderName}</span>
-                      <span className="contact-number">{currentMsg?.senderNumber || selectedScenario?.initialMsg?.senderNumber}</span>
-                    </div>
-                    <button className="loupe-btn" onClick={() => setLoupeActive(!loupeActive)} title="Activer la loupe de détection">
-                      <SearchIcon />
-                    </button>
+              <div className="app-header whatsapp-header">
+                <div className="header-top">
+                  <button className="back-btn" onClick={handleReplay}><BackIcon /></button>
+                  <div className="profile-circle">
+                    <span className="profile-initial">{currentMsg?.senderName?.[0] || 'I'}</span>
                   </div>
+                  <div className="contact-info">
+                    <span className="contact-name">{currentMsg?.senderName || selectedScenario?.initialMsg?.senderName}</span>
+                    <span className="contact-number">{currentMsg?.senderNumber || selectedScenario?.initialMsg?.senderNumber}</span>
+                  </div>
+                  <button className="loupe-btn" onClick={() => setLoupeActive(!loupeActive)} title="Activer la loupe de détection">
+                    <SearchIcon />
+                  </button>
                 </div>
-              )}
+              </div>
 
               <div className="chat-area">
                 {messages.map((msg) => (
@@ -454,60 +559,6 @@ const CellularSignalIcon = () => (
                 </div>
               )}
 
-              {gameState === 'ended' && currentEnding && (
-                <div className="end-screen">
-                  <div className="score-summary">
-                    <div className="ending-icon">
-                      {currentEnding.type === 'win' && <CheckCircleIcon />}
-                      {currentEnding.type === 'partial' && <AlertTriangleIcon />}
-                      {currentEnding.type === 'lose' && <XCircleIcon />}
-                    </div>
-                    <h2>{currentEnding.title}</h2>
-                    <p className="summary-text">{currentEnding.summary}</p>
-                  </div>
-                  
-                  <div className="path-tree">
-                    <h4>Parcours de votre simulation :</h4>
-                    {historyNodes.map((nodeText, idx) => (
-                      <div key={idx} className="path-node-wrapper">
-                        <div className={`path-step ${nodeText.startsWith('Choix :') ? 'highlight-choice' : ''}`}>
-                          {nodeText}
-                        </div>
-                        {idx < historyNodes.length - 1 && <div className="path-line"></div>}
-                      </div>
-                    ))}
-                  </div>
-
-                  {currentEnding.signalsLearned && (
-                    <div className="signals-section">
-                      <h3>Leçons & Signaux Clés :</h3>
-                      <ul className="signals-list found">
-                        {currentEnding.signalsLearned.map((signal, i) => (
-                          <li key={i}>
-                            <LightbulbIcon />
-                            <span>{signal}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  <div className="prevention-blocks">
-                    <div className="prevention-card cnin">
-                      <h4>Victime d'escroquerie ?</h4>
-                      <p>Signalez au <strong>CNIN</strong> (Centre National de Traitement des Incidents)</p>
-                    </div>
-                    <div className="prevention-card enfance">
-                      <h4>Assistance Mineurs ?</h4>
-                      <p>Appelez le numéro gratuit <strong>Allô Enfance 138</strong></p>
-                    </div>
-                  </div>
-
-                  <div className="end-buttons">
-                    <button className="choice-btn replay-btn" onClick={handleReplay}>Recommencer un scénario</button>
-                  </div>
-                </div>
-              )}
             </>
           )}
           {renderHomeIndicator()}
