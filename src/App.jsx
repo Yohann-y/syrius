@@ -30,6 +30,25 @@ const PauseIcon = () => (
   </svg>
 );
 
+const voiceWaveform = [4, 8, 13, 9, 17, 11, 6, 15, 20, 12, 7, 16, 10, 19, 13, 5, 11, 18, 8, 14, 20, 9, 15, 6, 12, 17, 10, 5, 14, 8, 18, 11, 6, 15];
+
+const getVoiceDuration = (text) => {
+  const seconds = Math.max(1, Math.round(text.trim().split(/\s+/).length / 2.5));
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+};
+
+const getBestFrenchVoice = (voices) => voices
+  .filter((voice) => voice.lang.toLowerCase().startsWith('fr'))
+  .sort((a, b) => {
+    const getQualityScore = (voice) => {
+      const name = voice.name.toLowerCase();
+      return (/\b(natural|neural|premium|enhanced|wavenet|studio|online|hd)\b/.test(name) ? 10 : 0)
+        + (voice.lang.toLowerCase() === 'fr-fr' ? 3 : 0)
+        + (voice.localService ? 0 : 2);
+    };
+    return getQualityScore(b) - getQualityScore(a);
+  })[0];
+
 const ArrowRightIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M5 12h14" />
@@ -83,13 +102,26 @@ function App() {
   const [codeSecret, setCodeSecret] = useState('')
   const [messages, setMessages] = useState([])
   const [historyNodes, setHistoryNodes] = useState([])
-  const [phoneModel, setPhoneModel] = useState('iphone')
   const [currentTime, setCurrentTime] = useState('')
   const [momoDetails, setMomoDetails] = useState({ amount: '5 000 FCFA', recipient: '+229 01 XX XX XX' })
   const [currentEnding, setCurrentEnding] = useState(null)
   const [playingAudioId, setPlayingAudioId] = useState(null)
+  const [voiceError, setVoiceError] = useState(null)
+  const [availableVoices, setAvailableVoices] = useState([])
 
   const chatEndRef = useRef(null);
+  const frenchVoiceAvailable = availableVoices.some((voice) => voice.lang.toLowerCase().startsWith('fr'));
+
+  useEffect(() => {
+    if (!('speechSynthesis' in window)) {
+      return undefined;
+    }
+
+    const updateVoices = () => setAvailableVoices(window.speechSynthesis.getVoices());
+    updateVoices();
+    window.speechSynthesis.addEventListener('voiceschanged', updateVoices);
+    return () => window.speechSynthesis.removeEventListener('voiceschanged', updateVoices);
+  }, []);
 
   useEffect(() => {
     const updateTime = () => {
@@ -108,27 +140,59 @@ function App() {
 
   // Audio Speech Synthesis for Real Voice Notes
   const handlePlayVoice = (msgId, text) => {
-    if ('speechSynthesis' in window) {
-      if (playingAudioId === msgId) {
-        window.speechSynthesis.cancel();
-        setPlayingAudioId(null);
-        return;
-      }
+    setVoiceError(null);
 
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'fr-FR';
-      utterance.rate = 0.95;
-      utterance.pitch = 1.0;
-
-      utterance.onend = () => setPlayingAudioId(null);
-      utterance.onerror = () => setPlayingAudioId(null);
-
-      setPlayingAudioId(msgId);
-      window.speechSynthesis.speak(utterance);
-    } else {
-      alert("La synthèse vocale n'est pas supportée par ce navigateur.");
+    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+      setVoiceError({
+        msgId,
+        message: 'La lecture vocale n’est pas prise en charge par ce navigateur.'
+      });
+      return;
     }
+
+    if (playingAudioId === msgId) {
+      window.speechSynthesis.cancel();
+      setPlayingAudioId(null);
+      return;
+    }
+
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length === 0) {
+      setVoiceError({
+        msgId,
+        message: 'Aucune voix n’est disponible. Sur Samsung, ouvrez Paramètres > Gestion globale > Synthèse vocale et installez une voix française de qualité élevée.'
+      });
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'fr-FR';
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    const frenchVoice = getBestFrenchVoice(voices);
+    if (!frenchVoice) {
+      setVoiceError({
+        msgId,
+        message: 'Aucune voix française n’est installée. Dans les paramètres de synthèse vocale Samsung, téléchargez les données vocales françaises de qualité élevée.'
+      });
+      return;
+    }
+    utterance.voice = frenchVoice;
+
+    utterance.onstart = () => setPlayingAudioId(msgId);
+    utterance.onend = () => setPlayingAudioId(null);
+    utterance.onerror = (event) => {
+      setPlayingAudioId(null);
+      if (event.error !== 'canceled' && event.error !== 'interrupted') {
+        setVoiceError({
+          msgId,
+          message: 'La lecture vocale a échoué. Vérifiez le moteur de synthèse vocale dans les paramètres de l’appareil.'
+        });
+      }
+    };
+
+    window.speechSynthesis.speak(utterance);
   };
 
   const startScenario = (scenario) => {
@@ -141,13 +205,7 @@ function App() {
     setLoupeActive(false);
     setCurrentEnding(null);
     setPlayingAudioId(null);
-
-    // Auto speak initial voice message if present
-    if (scenario.initialMsg.isVocal && scenario.initialMsg.audioText) {
-      setTimeout(() => {
-        handlePlayVoice(scenario.initialMsg.id, scenario.initialMsg.audioText);
-      }, 500);
-    }
+    setVoiceError(null);
   };
 
   const handleChoiceSelect = (choice) => {
@@ -180,10 +238,6 @@ function App() {
         setCurrentMsg(node);
         setMessages(prev => [...prev, node]);
         setHistoryNodes(prev => [...prev, node.parts ? node.parts.map(p => p.text).join('') : 'Message reçu']);
-
-        if (node.isVocal && node.audioText) {
-          handlePlayVoice(node.id, node.audioText);
-        }
       }, 700);
 
     } else if (selectedScenario.endings && selectedScenario.endings[nextId]) {
@@ -219,6 +273,7 @@ function App() {
     setCodeSecret('');
     setSelectedScenario(null);
     setPlayingAudioId(null);
+    setVoiceError(null);
   };
 
 const WifiIcon = () => (
@@ -247,7 +302,7 @@ const CellularSignalIcon = () => (
 );
 
   const renderStatusBar = () => (
-    <div className="status-bar">
+    <div className="status-bar status-bar-light">
       <span className="status-time">{currentTime}</span>
       <div className="status-icons">
         <span className="status-signal"><CellularSignalIcon /></span>
@@ -255,14 +310,6 @@ const CellularSignalIcon = () => (
         <span className="status-battery"><BatteryIcon /></span>
       </div>
     </div>
-  );
-
-  const renderNotchOrIsland = () => (
-    <>
-      {phoneModel === 'iphone' && <div className="dynamic-island"></div>}
-      {phoneModel === 'samsung' && <div className="hole-punch"></div>}
-      {phoneModel === 'pixel' && <div className="pixel-pill"></div>}
-    </>
   );
 
   const renderHomeIndicator = () => (
@@ -273,15 +320,10 @@ const CellularSignalIcon = () => (
   if (currentScreen === 'menu') {
     return (
       <div className="app-container">
-        <div className="skin-selector">
-          <button className={phoneModel === 'iphone' ? 'active' : ''} onClick={() => setPhoneModel('iphone')}>iPhone</button>
-          <button className={phoneModel === 'samsung' ? 'active' : ''} onClick={() => setPhoneModel('samsung')}>Samsung</button>
-          <button className={phoneModel === 'pixel' ? 'active' : ''} onClick={() => setPhoneModel('pixel')}>Pixel</button>
-        </div>
-        <div className="phone-wrapper tilt-effect">
-          <div className={`phone-frame menu-frame skin-${phoneModel}`}>
+        <div className="phone-wrapper">
+          <div className="phone-frame menu-frame skin-samsung">
             {renderStatusBar()}
-            {renderNotchOrIsland()}
+            <div className="hole-punch" aria-hidden="true"></div>
             <div className="menu-header">
               <div className="shield-icon">
                 <ShieldIcon />
@@ -310,16 +352,10 @@ const CellularSignalIcon = () => (
   // --- RENDU : JEU EN COURS ---
   return (
     <div className="app-container">
-      <div className="skin-selector">
-        <button className={phoneModel === 'iphone' ? 'active' : ''} onClick={() => setPhoneModel('iphone')}>iPhone</button>
-        <button className={phoneModel === 'samsung' ? 'active' : ''} onClick={() => setPhoneModel('samsung')}>Samsung</button>
-        <button className={phoneModel === 'pixel' ? 'active' : ''} onClick={() => setPhoneModel('pixel')}>Pixel</button>
-      </div>
-
-      <div className="phone-wrapper tilt-effect">
-        <div className={`phone-frame skin-${phoneModel}`}>
+      <div className="phone-wrapper">
+        <div className="phone-frame skin-samsung">
           {renderStatusBar()}
-          {renderNotchOrIsland()}
+          <div className="hole-punch" aria-hidden="true"></div>
           
           {/* ÉCRAN MOBILE MONEY */}
           {gameState === 'momo' && (
@@ -364,25 +400,43 @@ const CellularSignalIcon = () => (
 
               <div className="chat-area">
                 {messages.map((msg) => (
-                  <div key={msg.id} className={`message ${msg.type}`}>
-                    <div className={`message-bubble ${msg.type}`}>
-                      {msg.type === 'received' && msg.isVocal && (
+                  <div key={msg.id} className={`message ${msg.type} ${msg.isVocal ? 'vocal-message' : ''}`}>
+                    <div className={`message-bubble ${msg.type} ${msg.isVocal ? 'vocal-bubble' : ''}`}>
+                      {msg.type === 'received' && msg.isVocal ? (
                         <div className="vocal-player">
-                          <button 
+                          <button
                             className={`vocal-play-btn ${playingAudioId === msg.id ? 'playing' : ''}`}
                             onClick={() => handlePlayVoice(msg.id, msg.audioText || (msg.parts ? msg.parts.map(p => p.text).join('') : msg.content))}
+                            aria-label={playingAudioId === msg.id ? 'Mettre en pause le message vocal' : 'Lire le message vocal'}
+                            aria-pressed={playingAudioId === msg.id}
                           >
                             {playingAudioId === msg.id ? <PauseIcon /> : <PlayIcon />}
-                            <span>{playingAudioId === msg.id ? 'Suspendre' : 'Écouter le message vocal'}</span>
                           </button>
+                          <div className="vocal-track">
+                            <div className="vocal-waveform" aria-hidden="true">
+                              {voiceWaveform.map((height, index) => (
+                                <span key={index} style={{ height: `${height}px` }} />
+                              ))}
+                            </div>
+                            <span className="vocal-duration">{getVoiceDuration(msg.audioText || msg.content || '')}</span>
+                          </div>
+                          {availableVoices.length > 0 && !frenchVoiceAvailable && (
+                            <p className="vocal-error" role="note">
+                              Installez une voix française de qualité élevée dans les paramètres de synthèse vocale Samsung.
+                            </p>
+                          )}
+                          {voiceError?.msgId === msg.id && (
+                            <p className="vocal-error" role="status">{voiceError.message}</p>
+                          )}
                         </div>
+                      ) : (
+                        <p>
+                          {msg.parts && msg.parts.map((part, index) => (
+                            <span key={index} className={part.suspect && loupeActive ? 'highlight' : ''}>{part.text}</span>
+                          ))}
+                          {!msg.parts && msg.content}
+                        </p>
                       )}
-                      <p>
-                        {msg.parts && msg.parts.map((part, index) => (
-                          <span key={index} className={part.suspect && loupeActive ? 'highlight' : ''}>{part.text}</span>
-                        ))}
-                        {!msg.parts && msg.content}
-                      </p>
                       <span className="time">{msg.time || '12:00'}</span>
                     </div>
                   </div>

@@ -10,17 +10,16 @@
       "time": "11:42",
       "senderName": "Capitaine Mensah (Douanes)",
       "senderNumber": "+229 01 97 12 34",
-      "isVocal": true,
-      "audioText": "Bonjour Madame Awa. Je suis le Capitaine Mensah du comité de sélection des Douanes. Votre dossier a été retenu parmi les 10 finalistes. Cependant, il manque le paiement des frais de timbre fiscal de 5 000 FCFA.",
+      "isVocal": false,
       "parts": [
         { "text": "Félicitations Mme Awa ! Vous êtes retenue pour la phase finale du ", "suspect": false },
         { "text": "Concours des Douanes 2026", "suspect": true },
-        { "text": ". Écoutez le message vocal ci-dessus.", "suspect": false }
+        { "text": ". Votre dossier est retenu parmi les 10 finalistes, sous réserve du paiement de frais de timbre fiscal.", "suspect": false }
       ],
       "choices": [
         {
           "id": "d_c1_vocal",
-          "text": "Écouter la note vocale et demander plus de précisions",
+          "text": "Demander plus de précisions sur les frais annoncés",
           "nextMsgId": "d_msg_precisions"
         },
         {
@@ -346,12 +345,11 @@
       "time": "09:15",
       "senderName": "Sophie (Recrutement TikTok VIP)",
       "senderNumber": "+229 01 45 22 11",
-      "isVocal": true,
-      "audioText": "Bonjour ! Je suis Sophie, responsable RH chez TikTok Media Partners. Nous recrutons des évaluateurs de contenus à domicile. Il suffit de liker des vidéos pour gagner 15 000 FCFA par jour. Pour valider votre inscription et recevoir vos 2 000 FCFA de bienvenue, répondez oui !",
+      "isVocal": false,
       "parts": [
-        { "text": "Offre d'emploi à domicile lucrative. ", "suspect": false },
-        { "text": "15 000 FCFA / jour pour liker des vidéos.", "suspect": true },
-        { "text": " Écoutez la note vocale du recruteur.", "suspect": false }
+        { "text": "Bonjour ! Nous recrutons des évaluateurs de contenus à domicile. ", "suspect": false },
+        { "text": "15 000 FCFA par jour", "suspect": true },
+        { "text": " pour liker des vidéos. Pour valider votre inscription, répondez oui !", "suspect": false }
       ],
       "choices": [
         {

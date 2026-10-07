@@ -1,126 +1,90 @@
-/* iPhone 15 Pro Mockup & iOS Styles */
+/* Samsung Galaxy S24 frame and One UI-inspired styling */
 
 .app-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  min-height: 100dvh;
   padding: 20px;
 }
 
 /* Phone Frame */
 .phone-frame, .menu-frame {
-  width: 393px;
-  height: 852px;
+  width: min(393px, calc(100vw - 32px), calc((100dvh - 32px) * 0.461));
+  height: min(852px, calc(100dvh - 32px));
   background: #ffffff;
-  border-radius: 55px;
+  border-radius: 48px;
   position: relative;
-  /* Titanium frame */
-  border: 14px solid #5b5c5e;
-  box-shadow: 
-    inset 0 0 0 2px #202022,
-    inset 0 0 0 4px #000,
-    0 0 0 1px #888,
-    0 30px 60px rgba(0, 0, 0, 0.6),
-    0 10px 20px rgba(0, 0, 0, 0.3);
+  border: 8px solid #858a91;
+  box-shadow:
+    inset 0 0 0 2px #17191d,
+    0 0 0 1px #c1c5ca,
+    0 30px 70px rgba(0, 0, 0, 0.58),
+    0 10px 24px rgba(0, 0, 0, 0.35);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  isolation: isolate;
 }
 
 /* Hardware Buttons */
 .phone-frame::before, .menu-frame::before {
   content: '';
   position: absolute;
-  top: 120px;
-  left: -16px;
+  top: 118px;
+  left: -10px;
   width: 3px;
-  height: 26px;
-  background: #444;
+  height: 28px;
+  background: linear-gradient(90deg, #555a60, #c1c5c9);
   border-radius: 3px 0 0 3px;
-  box-shadow: 0 45px 0 0 #444, 0 110px 0 0 #444;
+  box-shadow: 0 48px 0 0 #858a91;
+  z-index: 110;
 }
 
 .phone-frame::after, .menu-frame::after {
   content: '';
   position: absolute;
-  top: 140px;
-  right: -16px;
+  top: 142px;
+  right: -10px;
   width: 3px;
-  height: 80px;
-  background: #444;
+  height: 68px;
+  background: linear-gradient(90deg, #555a60, #c1c5c9);
   border-radius: 0 3px 3px 0;
+  z-index: 110;
 }
 
-/* Notches */
-.notch {
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #000;
-  z-index: 100;
-  box-shadow: inset 0 -1px 2px rgba(255,255,255,0.1);
+/* Galaxy S24 centered front camera and titanium frame */
+.skin-samsung {
+  border-color: #858a91;
+  border-radius: 48px;
 }
-
-.notch-iphone {
-  width: 126px;
-  height: 37px;
-  border-radius: 20px; /* Dynamic Island */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 10px;
-}
-
-.notch-iphone::after {
-  content: '';
-  width: 12px;
-  height: 12px;
-  background: #111;
-  border-radius: 50%;
-  border: 2px solid #222;
-}
-
-.notch-samsung {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  top: 10px;
-}
-
-.notch-pixel {
-  width: 50px;
-  height: 20px;
-  border-radius: 10px;
-}
-
-/* Skin Specific Overrides (Optional outer coloring) */
-.skin-iphone { border-color: #5b5c5e; }
-.skin-samsung { border-radius: 40px; border-color: #111; }
-.skin-pixel { border-radius: 45px; border-color: #b0b4b8; }
 
 /* Status Bar Area */
 .status-bar {
-  height: 50px;
+  height: 38px;
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 25px;
+  padding: 0 18px;
   font-size: 14px;
   font-weight: 600;
   color: #000;
   position: absolute;
   top: 0;
   z-index: 90;
+  pointer-events: none;
+}
+
+.status-bar-light {
+  color: #fff;
 }
 
 /* App Header (WhatsApp style) */
 .app-header {
   background: #f6f6f6;
   border-bottom: 1px solid var(--ios-separator);
-  padding: 55px 15px 10px 15px; /* Offset for notch */
+  padding: 43px 15px 10px;
   display: flex;
   align-items: center;
   backdrop-filter: blur(10px);
@@ -154,7 +118,7 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* Scrollbar hidden for pure iOS look */
+/* Keep the simulated chat close to a native mobile messaging app. */
 .chat-area::-webkit-scrollbar {
   display: none;
 }
@@ -188,6 +152,15 @@
   background: var(--whatsapp-sent);
   color: #000;
   border-top-right-radius: 4px;
+}
+
+.message.vocal-message {
+  width: min(84%, 300px);
+  max-width: none;
+}
+
+.message.vocal-message .vocal-bubble {
+  width: 100%;
 }
 
 .time {
@@ -234,30 +207,15 @@
   bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
-  width: 130px;
-  height: 5px;
-  background: #000;
+  width: 108px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.65);
   border-radius: 100px;
   z-index: 1000;
 }
 
-/* Skin Selector */
-.skin-selector {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  display: flex;
-  gap: 10px;
-}
-
-.skin-selector button {
-  padding: 8px 12px;
-  border-radius: 20px;
-  border: none;
-  background: rgba(255,255,255,0.1);
-  color: #fff;
-  cursor: pointer;
-  backdrop-filter: blur(5px);
+.menu-frame .home-indicator {
+  background: rgba(255, 255, 255, 0.75);
 }
 
 /* End Screen */
@@ -330,17 +288,17 @@
 
 /* Menu Screen */
 .menu-frame {
-  background: linear-gradient(135deg, #064e3b, #059669);
+  background: linear-gradient(160deg, #163b48 0%, #087e75 100%);
   color: white;
 }
 
 .menu-header {
-  padding: 70px 20px 30px;
+  padding: 54px 20px 24px;
   text-align: center;
 }
 
 .menu-list {
-  padding: 0 20px;
+  padding: 0 16px 18px;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -349,10 +307,10 @@
 }
 
 .scenario-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 20px;
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 18px;
+  border-radius: 24px;
   text-align: left;
   cursor: pointer;
   backdrop-filter: blur(10px);
@@ -503,23 +461,26 @@
 }
 
 .vocal-player {
-  margin-bottom: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
 }
 
 .vocal-play-btn {
-  background: #25d366;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  background: #00a884;
   color: white;
   border: none;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
+  border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
-  box-shadow: 0 2px 6px rgba(37, 211, 102, 0.3);
-  transition: all 0.2s ease;
+  justify-content: center;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .vocal-play-btn:active {
@@ -527,8 +488,50 @@
 }
 
 .vocal-play-btn.playing {
-  background: var(--ios-red);
-  box-shadow: 0 2px 6px rgba(255, 59, 48, 0.3);
+  background: #087e67;
+}
+
+.vocal-track {
+  flex: 1;
+  min-width: 0;
+}
+
+.vocal-waveform {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.vocal-waveform span {
+  width: 3px;
+  min-height: 4px;
+  flex: 1 1 3px;
+  max-width: 4px;
+  background: #86949a;
+  border-radius: 3px;
+}
+
+.vocal-play-btn.playing + .vocal-track .vocal-waveform span:nth-child(3n) {
+  background: #00a884;
+}
+
+.vocal-duration {
+  display: block;
+  margin-top: 3px;
+  color: #667781;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.vocal-error {
+  flex-basis: 100%;
+  margin: 0;
+  color: #a61b1b;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 /* Buttons */
@@ -554,70 +557,23 @@
   margin-bottom: 20px;
 }
 
-/* ===== Dynamic Island / Hole-punch / Pixel Pill ===== */
-.dynamic-island {
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 126px;
-  height: 37px;
-  background: #000;
-  border-radius: 20px;
-  z-index: 100;
-  box-shadow: inset 0 -1px 3px rgba(255,255,255,0.08);
-}
-
-/* Small camera lens dot inside Dynamic Island */
-.dynamic-island::after {
-  content: '';
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 11px;
-  height: 11px;
-  background: radial-gradient(circle, #1a1a2e 40%, #0a0a12 100%);
-  border-radius: 50%;
-  border: 1.5px solid #222;
-}
-
+/* Galaxy S24 camera cutout */
 .hole-punch {
   position: absolute;
   top: 10px;
   left: 50%;
   transform: translateX(-50%);
-  width: 14px;
-  height: 14px;
+  width: 11px;
+  height: 11px;
   background: #000;
   border-radius: 50%;
-  z-index: 100;
-  box-shadow: 0 0 0 2px #111;
+  z-index: 101;
+  box-shadow: 0 0 0 2px #17191d, inset 0 0 0 1px #252830;
 }
 
-.pixel-pill {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 48px;
-  height: 18px;
-  background: #000;
-  border-radius: 10px;
-  z-index: 100;
-}
-
-/* ===== Phone Wrapper & 3D Tilt ===== */
+/* ===== Phone Wrapper ===== */
 .phone-wrapper {
   perspective: 1200px;
-}
-
-.tilt-effect {
-  transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.tilt-effect:hover {
-  transform: rotateY(-2deg) rotateX(1deg);
 }
 
 /* ===== Status Bar Internals ===== */
@@ -805,12 +761,6 @@
 
 .message-bubble.sent {
   position: relative;
-}
-
-/* ===== Skin Selector Active State ===== */
-.skin-selector button.active {
-  background: var(--ios-blue);
-  color: #fff;
 }
 
 /* ===== End screen enhancements ===== */
