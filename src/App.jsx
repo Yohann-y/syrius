@@ -1,21 +1,23 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import scenarios from './scenarios.json'
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('menu')
   const [selectedScenario, setSelectedScenario] = useState(null)
+  const [currentMsg, setCurrentMsg] = useState(null)
   const [gameState, setGameState] = useState('playing') // 'playing' | 'momo' | 'ended'
   const [loupeActive, setLoupeActive] = useState(false)
   const [codeSecret, setCodeSecret] = useState('')
   const [messages, setMessages] = useState([])
-  const [timeLeft, setTimeLeft] = useState(30)
-  const [relanceSent, setRelanceSent] = useState(false)
+  const [historyNodes, setHistoryNodes] = useState([])
   const [phoneModel, setPhoneModel] = useState('iphone')
-  const [lastChoice, setLastChoice] = useState(null)
   const [currentTime, setCurrentTime] = useState('')
-  const [resultOutcome, setResultOutcome] = useState('lose') // 'win' | 'lose'
-  const [winReason, setWinReason] = useState('')
+  const [momoDetails, setMomoDetails] = useState({ amount: '5 000 FCFA', recipient: '+229 01 XX XX XX' })
+  const [currentEnding, setCurrentEnding] = useState(null)
+  const [playingAudioId, setPlayingAudioId] = useState(null)
+
+  const chatEndRef = useRef(null);
 
   useEffect(() => {
     const updateTime = () => {
@@ -27,87 +29,129 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // --- LOGIQUE DU TIMER ---
+  // Auto scroll
   useEffect(() => {
-    if (currentScreen !== 'game' || gameState !== 'playing' || timeLeft <= 0) return;
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, gameState]);
 
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        if (prev === 11 && !relanceSent && selectedScenario?.relanceMsg) {
-          setRelanceSent(true);
-          setMessages(prevMsgs => [...prevMsgs, { ...selectedScenario.relanceMsg, id: Date.now() }]);
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  // Audio Speech Synthesis for Real Voice Notes
+  const handlePlayVoice = (msgId, text) => {
+    if ('speechSynthesis' in window) {
+      if (playingAudioId === msgId) {
+        window.speechSynthesis.cancel();
+        setPlayingAudioId(null);
+        return;
+      }
 
-    return () => clearInterval(timer);
-  }, [currentScreen, gameState, timeLeft, relanceSent, selectedScenario]);
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'fr-FR';
+      utterance.rate = 0.95;
+      utterance.pitch = 1.0;
+
+      utterance.onend = () => setPlayingAudioId(null);
+      utterance.onerror = () => setPlayingAudioId(null);
+
+      setPlayingAudioId(msgId);
+      window.speechSynthesis.speak(utterance);
+    } else {
+      alert("La synthèse vocale n'est pas supportée par ce navigateur.");
+    }
+  };
 
   const startScenario = (scenario) => {
     setSelectedScenario(scenario);
+    setCurrentMsg(scenario.initialMsg);
     setMessages([scenario.initialMsg]);
+    setHistoryNodes([scenario.initialMsg.parts ? scenario.initialMsg.parts.map(p => p.text).join('') : 'Début']);
     setCurrentScreen('game');
     setGameState('playing');
-    setTimeLeft(30);
-    setRelanceSent(false);
     setLoupeActive(false);
-    setLastChoice(null);
-    setResultOutcome('lose');
-    setWinReason('');
+    setCurrentEnding(null);
+    setPlayingAudioId(null);
+
+    // Auto speak initial voice message if present
+    if (scenario.initialMsg.isVocal && scenario.initialMsg.audioText) {
+      setTimeout(() => {
+        handlePlayVoice(scenario.initialMsg.id, scenario.initialMsg.audioText);
+      }, 500);
+    }
   };
 
-  const handleChoice = (choice) => {
-    setLastChoice(choice);
-    
-    // Message envoyé par le joueur
-    const userMsg = {
-      id: Date.now(),
+  const handleChoiceSelect = (choice) => {
+    // 1. Append player choice message
+    const playerMsg = {
+      id: `user_${Date.now()}`,
       type: 'sent',
       content: choice.text,
       time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
     };
 
-    setMessages(prev => [...prev, userMsg]);
+    setMessages(prev => [...prev, playerMsg]);
+    setHistoryNodes(prev => [...prev, `Choix : ${choice.text}`]);
 
-    if (choice.target === 'momo') {
+    const nextId = choice.nextMsgId;
+
+    // Check if nextId is a storyNode
+    if (selectedScenario.storyNodes && selectedScenario.storyNodes[nextId]) {
+      const node = selectedScenario.storyNodes[nextId];
+
+      if (node.type === 'momo') {
+        setMomoDetails({
+          amount: node.amount || '5 000 FCFA',
+          recipient: node.recipient || '+229 01 XX XX XX',
+          nextMsgId: node.nextMsgId
+        });
+        setTimeout(() => setGameState('momo'), 800);
+        return;
+      }
+
+      // Add received message after short typing delay
       setTimeout(() => {
-        setGameState('momo');
+        setCurrentMsg(node);
+        setMessages(prev => [...prev, node]);
+        setHistoryNodes(prev => [...prev, node.parts ? node.parts.map(p => p.text).join('') : 'Message reçu']);
+
+        if (node.isVocal && node.audioText) {
+          handlePlayVoice(node.id, node.audioText);
+        }
       }, 700);
-    } else if (choice.target === 'win') {
-      setResultOutcome('win');
-      setWinReason(choice.winReason || 'Vous avez correctement identifié l’arnaque.');
+
+    } else if (selectedScenario.endings && selectedScenario.endings[nextId]) {
+      // It's a direct ending
+      const ending = selectedScenario.endings[nextId];
       setTimeout(() => {
+        setCurrentEnding(ending);
         setGameState('ended');
-      }, 1000);
-    } else if (choice.target === 'details') {
-      // Réponse de l'escroc demandant à nouveau l'argent
-      setTimeout(() => {
-        const replyMsg = {
-          id: Date.now() + 1,
-          type: 'received',
-          content: choice.reply || "Ne perdez pas de temps, l'offre expire bientôt !",
-          time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-        };
-        setMessages(prev => [...prev, replyMsg]);
-      }, 800);
+      }, 900);
     }
   };
 
-  const handleCodeSubmit = (e) => {
+  const handleMomoSubmit = (e) => {
     e.preventDefault();
-    setResultOutcome('lose');
+    if (momoDetails.nextMsgId && selectedScenario.endings[momoDetails.nextMsgId]) {
+      const ending = selectedScenario.endings[momoDetails.nextMsgId];
+      setCurrentEnding(ending);
+    } else {
+      // Default lose ending if not specified
+      setCurrentEnding({
+        type: 'lose',
+        title: '❌ Transactions effectuée - Argent Perdu !',
+        summary: "Vous avez validé le transfert Moov/MTN. L'escroc a récupéré les fonds immédiatement.",
+        signalsLearned: ["Ne validez jamais de transfert d'argent sans vérification indépendante"]
+      });
+    }
     setGameState('ended');
   };
 
   const handleReplay = () => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
     setCurrentScreen('menu');
     setCodeSecret('');
     setSelectedScenario(null);
+    setPlayingAudioId(null);
   };
 
   const renderStatusBar = () => (
@@ -149,7 +193,7 @@ function App() {
             <div className="menu-header">
               <div className="shield-icon">🛡️</div>
               <h1>SYRIUS</h1>
-              <p className="tagline">Apprends à déjouer les arnaques</p>
+              <p className="tagline">Moteur de Simulation & Prévention des Arnaques</p>
             </div>
             <div className="menu-list">
               {scenarios.map(scen => (
@@ -187,18 +231,18 @@ function App() {
           {gameState === 'momo' && (
             <div className="momo-screen">
               <div className="momo-header">
-                <span className="momo-logo">Moov Money</span>
+                <span className="momo-logo">Moov / MTN Money</span>
                 <button className="momo-close" onClick={handleReplay}>✕</button>
               </div>
               <div className="momo-body">
-                <p className="momo-amount">Montant : <strong>{lastChoice?.amount || '5 000 FCFA'}</strong></p>
-                <p className="momo-recipient">Bénéficiaire : {selectedScenario?.initialMsg?.senderNumber || '+229 01 97 XX XX'}</p>
-                <form onSubmit={handleCodeSubmit}>
-                  <label className="momo-label">Code secret à 4 chiffres :</label>
-                  <input type="password" maxLength="4" className="momo-input" value={codeSecret} onChange={(e) => setCodeSecret(e.target.value)} placeholder="****" autoFocus />
-                  <button type="submit" className="momo-btn">Valider le paiement</button>
+                <p className="momo-amount">Montant : <strong>{momoDetails.amount}</strong></p>
+                <p className="momo-recipient">Bénéficiaire : {momoDetails.recipient}</p>
+                <form onSubmit={handleMomoSubmit}>
+                  <label className="momo-label">Entrez votre code secret à 4 chiffres :</label>
+                  <input type="password" maxLength="4" className="momo-input" value={codeSecret} onChange={(e) => setCodeSecret(e.target.value)} placeholder="****" autoFocus required />
+                  <button type="submit" className="momo-btn">Confirmer le Transfert</button>
                 </form>
-                <p className="momo-warning">⚠️ Ne donnez jamais votre code secret à un tiers !</p>
+                <p className="momo-warning">⚠️ Ne communiquez jamais votre code secret par téléphone ou message !</p>
               </div>
             </div>
           )}
@@ -211,13 +255,13 @@ function App() {
                   <div className="header-top">
                     <button className="back-btn" onClick={handleReplay}>←</button>
                     <div className="profile-circle">
-                      <span className="profile-initial">{selectedScenario?.initialMsg?.senderName?.[0] || 'I'}</span>
+                      <span className="profile-initial">{currentMsg?.senderName?.[0] || 'I'}</span>
                     </div>
                     <div className="contact-info">
-                      <span className="contact-name">{selectedScenario?.initialMsg?.senderName || 'Inconnu'}</span>
-                      <span className="contact-number">{selectedScenario?.initialMsg?.senderNumber || '+229 01 XX XX XX'}</span>
+                      <span className="contact-name">{currentMsg?.senderName || selectedScenario?.initialMsg?.senderName}</span>
+                      <span className="contact-number">{currentMsg?.senderNumber || selectedScenario?.initialMsg?.senderNumber}</span>
                     </div>
-                    <span className={`timer-pill ${timeLeft <= 10 ? 'timer-danger' : ''}`}>{timeLeft}s</span>
+                    <button className="loupe-btn" onClick={() => setLoupeActive(!loupeActive)} title="Activer la loupe de détection">🔍</button>
                   </div>
                 </div>
               )}
@@ -226,10 +270,14 @@ function App() {
                 {messages.map((msg) => (
                   <div key={msg.id} className={`message ${msg.type}`}>
                     <div className={`message-bubble ${msg.type}`}>
-                      {msg.type === 'received' && (
-                        <div className="msg-tools">
-                          <button className="loupe-btn" onClick={() => setLoupeActive(!loupeActive)} title="Inspecter les signaux suspects">🔍</button>
-                          {msg.isVocal && <div className="vocal-badge">🎙️ Message vocal</div>}
+                      {msg.type === 'received' && msg.isVocal && (
+                        <div className="vocal-player">
+                          <button 
+                            className={`vocal-play-btn ${playingAudioId === msg.id ? 'playing' : ''}`}
+                            onClick={() => handlePlayVoice(msg.id, msg.audioText || (msg.parts ? msg.parts.map(p => p.text).join('') : msg.content))}
+                          >
+                            {playingAudioId === msg.id ? '⏸️ Suspendre' : '▶️ Écouter le message vocal'}
+                          </button>
                         </div>
                       )}
                       <p>
@@ -238,49 +286,48 @@ function App() {
                         ))}
                         {!msg.parts && msg.content}
                       </p>
-                      <span className="time">{msg.time}</span>
+                      <span className="time">{msg.time || '12:00'}</span>
                     </div>
                   </div>
                 ))}
+                <div ref={chatEndRef} />
               </div>
 
-              {gameState === 'playing' && selectedScenario?.choices && (
+              {gameState === 'playing' && currentMsg?.choices && (
                 <div className="choices-area">
-                  {selectedScenario.choices.map((choice) => (
-                    <button key={choice.id} className="choice-btn" onClick={() => handleChoice(choice)}>
+                  {currentMsg.choices.map((choice) => (
+                    <button key={choice.id} className="choice-btn" onClick={() => handleChoiceSelect(choice)}>
                       {choice.text}
                     </button>
                   ))}
                 </div>
               )}
 
-              {gameState === 'ended' && (
+              {gameState === 'ended' && currentEnding && (
                 <div className="end-screen">
                   <div className="score-summary">
-                    <h2>{resultOutcome === 'win' ? '🎉 Victoire !' : '❌ Piégé !'}</h2>
-                    <p className="summary-text">
-                      {resultOutcome === 'win' 
-                        ? (winReason || "Vous avez réussi à déjouer l'arnaque !") 
-                        : "Vous êtes tombé dans le piège de cette escroquerie."}
-                    </p>
+                    <h2>{currentEnding.type === 'win' ? '🎉' : currentEnding.type === 'partial' ? '⚠️' : '❌'} {currentEnding.title}</h2>
+                    <p className="summary-text">{currentEnding.summary}</p>
                   </div>
                   
                   <div className="path-tree">
-                    <div className="path-step">💬 Scenario : {selectedScenario?.titre}</div>
-                    <div className="path-line"></div>
-                    <div className="path-step highlight-choice">👉 Choix : {lastChoice?.text || 'Temps écoulé'}</div>
-                    <div className="path-line"></div>
-                    <div className={`path-step ${resultOutcome === 'win' ? 'win' : 'lost'}`}>
-                      {resultOutcome === 'win' ? '✅ VICTOIRE (Arnaque déjouée)' : '❌ PERDU (Argent versé / Piège)'}
-                    </div>
+                    <h4>📜 Parcours de votre simulation :</h4>
+                    {historyNodes.map((nodeText, idx) => (
+                      <div key={idx} className="path-node-wrapper">
+                        <div className={`path-step ${nodeText.startsWith('Choix :') ? 'highlight-choice' : ''}`}>
+                          {nodeText}
+                        </div>
+                        {idx < historyNodes.length - 1 && <div className="path-line"></div>}
+                      </div>
+                    ))}
                   </div>
 
-                  {selectedScenario?.signals && (
+                  {currentEnding.signalsLearned && (
                     <div className="signals-section">
-                      <h3>🔍 Signaux suspects du scénario</h3>
+                      <h3>🔍 Leçons & Signaux Clés :</h3>
                       <ul className="signals-list found">
-                        {selectedScenario.signals.map(s => (
-                          <li key={s.id}>⚠️ {s.text}</li>
+                        {currentEnding.signalsLearned.map((signal, i) => (
+                          <li key={i}>💡 {signal}</li>
                         ))}
                       </ul>
                     </div>
@@ -288,17 +335,17 @@ function App() {
 
                   <div className="prevention-blocks">
                     <div className="prevention-card cnin">
-                      <h4>🛡️ Victime ?</h4>
-                      <p>Signalez l'arnaque au <strong>CNIN</strong></p>
+                      <h4>🛡️ Victime d'escroquerie ?</h4>
+                      <p>Signalez au <strong>CNIN</strong> (Centre National de Traitement des Incidents)</p>
                     </div>
                     <div className="prevention-card enfance">
-                      <h4>👶 Un mineur ?</h4>
-                      <p>Appelez <strong>Allô Enfance au 138</strong></p>
+                      <h4>👶 Assistance Mineurs ?</h4>
+                      <p>Appelez le numéro gratuit <strong>Allô Enfance 138</strong></p>
                     </div>
                   </div>
 
                   <div className="end-buttons">
-                    <button className="choice-btn replay-btn" onClick={handleReplay}>Retour au menu</button>
+                    <button className="choice-btn replay-btn" onClick={handleReplay}>Recommencer un scénario</button>
                   </div>
                 </div>
               )}

@@ -502,6 +502,35 @@
   align-items: center;
 }
 
+.vocal-player {
+  margin-bottom: 8px;
+}
+
+.vocal-play-btn {
+  background: #25d366;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(37, 211, 102, 0.3);
+  transition: all 0.2s ease;
+}
+
+.vocal-play-btn:active {
+  transform: scale(0.96);
+}
+
+.vocal-play-btn.playing {
+  background: var(--ios-red);
+  box-shadow: 0 2px 6px rgba(255, 59, 48, 0.3);
+}
+
 /* Buttons */
 .replay-btn {
   background: var(--ios-blue);

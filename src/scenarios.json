@@ -3,159 +3,499 @@
     "id": 1,
     "titre": "Concours des Douanes",
     "categorie": "💵 Argent",
+    "description": "Un soi-disant officier des douanes vous contacte au sujet d'un concours...",
     "initialMsg": {
-      "id": 1,
+      "id": "d_start",
       "type": "received",
       "time": "11:42",
-      "isVocal": true,
-      "senderName": "Service Recrutement Douanes",
+      "senderName": "Capitaine Mensah (Douanes)",
       "senderNumber": "+229 01 97 12 34",
+      "isVocal": true,
+      "audioText": "Bonjour Madame Awa. Je suis le Capitaine Mensah du comité de sélection des Douanes. Votre dossier a été retenu parmi les 10 finalistes. Cependant, il manque le paiement des frais de timbre fiscal de 5 000 FCFA.",
       "parts": [
-        { "text": "Félicitations Mme Awa ! Vous êtes présélectionné au ", "suspect": false },
+        { "text": "Félicitations Mme Awa ! Vous êtes retenue pour la phase finale du ", "suspect": false },
         { "text": "Concours des Douanes 2026", "suspect": true },
-        { "text": ". Frais de dossier de ", "suspect": false },
-        { "text": "5000F", "suspect": true },
-        { "text": " à payer via Moov Money pour recevoir vos 500 000F. Répondez ", "suspect": false },
-        { "text": "VITE", "suspect": true }
+        { "text": ". Écoutez le message vocal ci-dessus.", "suspect": false }
+      ],
+      "choices": [
+        {
+          "id": "d_c1_vocal",
+          "text": "Écouter la note vocale et demander plus de précisions",
+          "nextMsgId": "d_msg_precisions"
+        },
+        {
+          "id": "d_c1_pay_fast",
+          "text": "Payer immédiatement les 5000 FCFA sans poser de questions",
+          "nextMsgId": "d_momo_direct"
+        },
+        {
+          "id": "d_c1_verify",
+          "text": "Vérifier la liste officielle des retenus sur le portail du Ministère",
+          "nextMsgId": "d_end_win_verify"
+        }
       ]
     },
-    "relanceMsg": {
-      "id": 99,
-      "type": "received",
-      "content": "⚠️ ALERTE : Votre gain sera annulé dans 10 secondes si vous ne payez pas les frais !",
-      "time": "11:43"
-    },
-    "choices": [
-      {
-        "id": "c1_pay",
-        "text": "Payer les 5000F via Moov Money",
-        "target": "momo",
-        "isScam": true,
-        "amount": "5 000 FCFA"
+    "storyNodes": {
+      "d_msg_precisions": {
+        "id": "d_msg_precisions",
+        "type": "received",
+        "time": "11:43",
+        "senderName": "Capitaine Mensah (Douanes)",
+        "senderNumber": "+229 01 97 12 34",
+        "isVocal": false,
+        "parts": [
+          { "text": "Madame, les délibérations ont lieu ce matin à ", "suspect": false },
+          { "text": "12h00 précises", "suspect": true },
+          { "text": ". Si votre récépissé de ", "suspect": false },
+          { "text": "5 000 FCFA via Moov/MTN Money", "suspect": true },
+          { "text": " n'est pas validé d'ici 10 minutes, nous passerons au candidat suivant sur la liste d'attente.", "suspect": false }
+        ],
+        "choices": [
+          {
+            "id": "d_c2_ask_decree",
+            "text": "Demander le numéro de l'arrêté ministériel officialisant ce paiement par Mobile Money",
+            "nextMsgId": "d_msg_threat"
+          },
+          {
+            "id": "d_c2_pay",
+            "text": "Céder à la pression et effectuer le dépôt Moov Money",
+            "nextMsgId": "d_momo_direct"
+          },
+          {
+            "id": "d_c2_call_customs",
+            "text": "Appeler le standard général de la Direction des Douanes",
+            "nextMsgId": "d_end_win_call"
+          }
+        ]
       },
-      {
-        "id": "c1_details",
-        "text": "Demander l'arrêté officiel du concours",
-        "target": "details",
-        "reply": "Service suspendu : veuillez effectuer le dépôt immédiat pour débloquer votre dossier."
+      "d_msg_threat": {
+        "id": "d_msg_threat",
+        "type": "received",
+        "time": "11:45",
+        "senderName": "Capitaine Mensah (Douanes)",
+        "senderNumber": "+229 01 97 12 34",
+        "isVocal": true,
+        "audioText": "Écoutez-moi bien ! Vous remettez en cause l'autorité de la Douane ? C'est une procédure d'urgence exceptionnelle accordée aux candidats régionaux ! Soit vous payez dans 3 minutes, soit votre candidature est définitivement annulée et rejetée pour insubordination !",
+        "parts": [
+          { "text": "⚠️ Écoutez la note vocale du Capitaine. Il devient agressif et insistant.", "suspect": true }
+        ],
+        "choices": [
+          {
+            "id": "d_c3_fear_pay",
+            "text": "Prendre peur et payer les 5 000 FCFA pour ne pas rater sa chance",
+            "nextMsgId": "d_momo_direct"
+          },
+          {
+            "id": "d_c3_second_scam",
+            "text": "Proposer d'apporter l'argent en liquide directement au ministère",
+            "nextMsgId": "d_msg_fake_office"
+          },
+          {
+            "id": "d_c3_hangup",
+            "text": "Raccrocher / Bloquer le numéro : les fonctionnaires ne réclament jamais de Moov Money avec des menaces",
+            "nextMsgId": "d_end_win_block"
+          }
+        ]
       },
-      {
-        "id": "c1_verify",
-        "text": "Vérifier sur le site officiel de la Douane",
-        "target": "win",
-        "winReason": "Vous avez évité l'arnaque en vérifiant à la source officielle !"
+      "d_msg_fake_office": {
+        "id": "d_msg_fake_office",
+        "type": "received",
+        "time": "11:47",
+        "senderName": "Capitaine Mensah (Douanes)",
+        "senderNumber": "+229 01 97 12 34",
+        "isVocal": false,
+        "parts": [
+          { "text": "D'accord, mais pour le badge d'accès express aux bureaux aujourd'hui, vous devez payer un supplément de ", "suspect": false },
+          { "text": "15 000 FCFA d'accréditation", "suspect": true },
+          { "text": " au secrétaire du comité.", "suspect": false }
+        ],
+        "choices": [
+          {
+            "id": "d_c4_pay_big",
+            "text": "Payer les 15 000 FCFA d'accréditation",
+            "nextMsgId": "d_momo_big"
+          },
+          {
+            "id": "d_c4_stop",
+            "text": "Réaliser que les exigences financières s'accumulent et tout arrêter",
+            "nextMsgId": "d_end_partial_stop"
+          }
+        ]
+      },
+      "d_momo_direct": {
+        "id": "d_momo_direct",
+        "type": "momo",
+        "amount": "5 000 FCFA",
+        "recipient": "+229 01 97 12 34 (Compte Privé)",
+        "nextMsgId": "d_end_lose_scammed"
+      },
+      "d_momo_big": {
+        "id": "d_momo_big",
+        "type": "momo",
+        "amount": "15 000 FCFA",
+        "recipient": "+229 01 97 12 34 (Compte Privé)",
+        "nextMsgId": "d_end_lose_heavy"
       }
-    ],
-    "signals": [
-      { "id": "s1", "text": "Frais de dossier exigés par transfert mobile", "suspect": true },
-      { "id": "s2", "text": "Formulation pressante (VITE / Annulation immédiate)", "suspect": true },
-      { "id": "s3", "text": "Promesse d'un gain disproportionné (500 000F contre 5 000F)", "suspect": true }
-    ]
+    },
+    "endings": {
+      "d_end_win_verify": {
+        "id": "d_end_win_verify",
+        "type": "win",
+        "title": "🎉 Victoire Parfaite !",
+        "summary": "Vous avez vérifié sur le portail officiel du Gouvernement. Aucun paiement par Mobile Money n'est jamais requis pour les concours publics.",
+        "signalsLearned": [
+          "Jamais de frais de concours publics via numéro Moov/MTN d'un particulier",
+          "Les communications officielles se font par canaux institutionnels"
+        ]
+      },
+      "d_end_win_call": {
+        "id": "d_end_win_call",
+        "type": "win",
+        "title": "🎉 Arnaque Déjouée avec Brio !",
+        "summary": "En appelant le standard officiel de la Douane, ils vous ont confirmé qu'aucun 'Capitaine Mensah' ne réclame d'argent par téléphone.",
+        "signalsLearned": [
+          "Toujours passer par le standard officiel trouvé de façon indépendante"
+        ]
+      },
+      "d_end_win_block": {
+        "id": "d_end_win_block",
+        "type": "win",
+        "title": "🛡️ Réflexe de Protection Activé !",
+        "summary": "Vous avez identifié l'agressivité et l'urgence artificielle. Vous avez bloqué l'escroc sans rien dépenser.",
+        "signalsLearned": [
+          "L'urgence et l'agressivité sont les armes principales des arnaqueurs"
+        ]
+      },
+      "d_end_partial_stop": {
+        "id": "d_end_partial_stop",
+        "type": "partial",
+        "title": "⚠️ Prise de Conscience à Temps !",
+        "summary": "L'escroc tentait de vous soutirer 15 000 FCFA supplémentaires. Vous vous êtes arrêté juste à temps avant de payer.",
+        "signalsLearned": [
+          "Une arnaque ne s'arrête jamais après le premier paiement"
+        ]
+      },
+      "d_end_lose_scammed": {
+        "id": "d_end_lose_scammed",
+        "type": "lose",
+        "title": "❌ Victime d'Escroquerie (5 000 FCFA perdus)",
+        "summary": "Vous avez transféré 5 000 FCFA à un numéro privé. L'escroc s'est volatilisé et votre numéro a été bloqué.",
+        "signalsLearned": [
+          "Le Mobile Money vers un particulier pour un concours public est TOUJOURS une arnaque"
+        ]
+      },
+      "d_end_lose_heavy": {
+        "id": "d_end_lose_heavy",
+        "type": "lose",
+        "title": "❌ Grosse Perte Financière (15 000 FCFA perdus)",
+        "summary": "En cédant aux exigences successives, vous avez perdu 15 000 FCFA. Les escrocs profitent de l'engrenage psychologique.",
+        "signalsLearned": [
+          "Méfiez-vous de l'escalade des frais réclamés en urgence"
+        ]
+      }
+    }
   },
   {
     "id": 2,
-    "titre": "Faux Accident",
+    "titre": "Faux Accident & Urgence Familiale",
     "categorie": "🚨 Urgence",
+    "description": "Un appel / message vocal désespéré prétend que votre enfant est à l'hôpital...",
     "initialMsg": {
-      "id": 1,
+      "id": "a_start",
       "type": "received",
       "time": "13:17",
-      "isVocal": true,
-      "senderName": "Numéro Inconnu",
+      "senderName": "Inconnu (Numéro masqué)",
       "senderNumber": "+229 01 64 88 99",
+      "isVocal": true,
+      "audioText": "Allo Maman ?! C'est moi... j'ai eu un grave accident de taxi en rentrant des cours ! Mon téléphone est cassé... Le médecin de garde refuse de m'opérer si on n'envoie pas 100 000 FCFA tout de suite sur son compte Moov Money ! S'il te plaît dépêche-toi, ne préviens pas Papa il va paniquer !",
       "parts": [
-        { "text": "Maman c'est moi, ", "suspect": false },
-        { "text": "j'ai eu un grave accident", "suspect": true },
-        { "text": ". Le médecin exige ", "suspect": false },
-        { "text": "100 000F tout de suite", "suspect": true },
-        { "text": " pour l'opération. Envoie sur ce numéro Moov, ", "suspect": false },
-        { "text": "ne préviens pas papa", "suspect": true },
-        { "text": "." }
+        { "text": "🚨 MESSAGE VOCAL D'URGENCE REÇU. ", "suspect": true },
+        { "text": "Écoutez la note vocale d'urgence ci-dessus.", "suspect": false }
+      ],
+      "choices": [
+        {
+          "id": "a_c1_listen_panicked",
+          "text": "Répondre immédiatement par message pour en savoir plus sur son état",
+          "nextMsgId": "a_msg_doctor"
+        },
+        {
+          "id": "a_c1_pay_fast",
+          "text": "Paniquer et envoyer 100 000 FCFA directement via Moov Money",
+          "nextMsgId": "a_momo_100k"
+        },
+        {
+          "id": "a_c1_call_son",
+          "text": "Suspendre le jugement et composer directement le numéro habituel de son fils",
+          "nextMsgId": "a_end_win_call_son"
+        }
       ]
     },
-    "relanceMsg": {
-      "id": 99,
-      "type": "received",
-      "content": "Maman je souffre beaucoup, dépêche-toi s'il te plaît !",
-      "time": "13:18"
-    },
-    "choices": [
-      {
-        "id": "c2_pay",
-        "text": "Envoyer 100 000F en urgence",
-        "target": "momo",
-        "isScam": true,
-        "amount": "100 000 FCFA"
+    "storyNodes": {
+      "a_msg_doctor": {
+        "id": "a_msg_doctor",
+        "type": "received",
+        "time": "13:19",
+        "senderName": "Dr. Koffi (Soins Intensifs)",
+        "senderNumber": "+229 01 64 88 99",
+        "isVocal": true,
+        "audioText": "Ici le Dr. Koffi aux urgences de la clinique Sainte-Rita. Votre fils a un traumatisme grave. La politique de l'établissement exige une avance d'urgence de 100 000 FCFA pour le bloc opératoire. Envoyez sur le numéro du brancardier +229 01 64 88 99 immédiatement !",
+        "parts": [
+          { "text": "👨‍⚕️ Le prétendu médecin prend le relais vocablement. Écoutez le message.", "suspect": true }
+        ],
+        "choices": [
+          {
+            "id": "a_c2_ask_clinic",
+            "text": "Demander l'adresse exacte de la clinique et proposer de venir immédiatement en taxi",
+            "nextMsgId": "a_msg_refuse_visit"
+          },
+          {
+            "id": "a_c2_pay_momo",
+            "text": "Effectuer le transfert Moov Money de 100 000 FCFA pour sauver son enfant",
+            "nextMsgId": "a_momo_100k"
+          },
+          {
+            "id": "a_c2_call_school",
+            "text": "Appeler le surveillant général du collège / lycée de son fils",
+            "nextMsgId": "a_end_win_school"
+          }
+        ]
       },
-      {
-        "id": "c2_call",
-        "text": "Appeler directement le vrai numéro de mon fils",
-        "target": "win",
-        "winReason": "Excellente réaction ! Votre fils a répondu tranquillement depuis sa classe."
+      "a_msg_refuse_visit": {
+        "id": "a_msg_refuse_visit",
+        "type": "received",
+        "time": "13:21",
+        "senderName": "Dr. Koffi (Soins Intensifs)",
+        "senderNumber": "+229 01 64 88 99",
+        "isVocal": false,
+        "parts": [
+          { "text": "Non ! La clinique est en ", "suspect": false },
+          { "text": "zone de quarantaine fermée", "suspect": true },
+          { "text": ". Les visites sont interdites ! Si vous venez sur place au lieu de payer, vous faites perdre du temps et ", "suspect": false },
+          { "text": "votre fils risque de succomber", "suspect": true },
+          { "text": " !", "suspect": false }
+        ],
+        "choices": [
+          {
+            "id": "a_c3_fear_pay",
+            "text": "Terrifiée par le chantage à la mort, envoyer les 100 000 FCFA",
+            "nextMsgId": "a_momo_100k"
+          },
+          {
+            "id": "a_c3_call_father",
+            "text": "Ignorer la consigne 'ne préviens pas papa' et appeler le père tout de suite",
+            "nextMsgId": "a_end_win_father"
+          }
+        ]
       },
-      {
-        "id": "c2_ask",
-        "text": "Demander le nom de l'hôpital et du médecin",
-        "target": "details",
-        "reply": "Pas le temps d'expliquer ! Le médecin va refuser l'intervention si tu n'envoies pas !"
+      "a_momo_100k": {
+        "id": "a_momo_100k",
+        "type": "momo",
+        "amount": "100 000 FCFA",
+        "recipient": "+229 01 64 88 99 (Compte Faux Médecin)",
+        "nextMsgId": "a_end_lose_100k"
       }
-    ],
-    "signals": [
-      { "id": "s1", "text": "Numéro de téléphone inconnu au lieu du vrai numéro de votre proche", "suspect": true },
-      { "id": "s2", "text": "Consigne d'isolement ('ne préviens pas papa')", "suspect": true },
-      { "id": "s3", "text": "Utilisation de la peur et du sentiment d'urgence vitale", "suspect": true }
-    ]
+    },
+    "endings": {
+      "a_end_win_call_son": {
+        "id": "a_end_win_call_son",
+        "type": "win",
+        "title": "🎉 Réflexe Salvateur !",
+        "summary": "Vous avez appelé votre fils sur son vrai numéro. Il était sagement assis en classe. L'escroc a utilisé une voix imitiée pour vous paniquer.",
+        "signalsLearned": [
+          "Toujours vérifier auprès du vrai numéro de votre proche",
+          "Méfiez-vous des voix modifiées ou pleurantes créées pour tromper"
+        ]
+      },
+      "a_end_win_school": {
+        "id": "a_end_win_school",
+        "type": "win",
+        "title": "🎉 Enquête Rapide Réussie !",
+        "summary": "Le surveillant de l'école vous a confirmé que votre enfant est bien présent en cours. L'arnaque est déjouée.",
+        "signalsLearned": [
+          "Contacter une institution tierce (école, travail) pour vérifier la présence"
+        ]
+      },
+      "a_end_win_father": {
+        "id": "a_end_win_father",
+        "type": "win",
+        "title": "🎉 Union Familiale Victorieuse !",
+        "summary": "Le père vous a rappelé qu'il venait de déposer votre fils à son activité 10 minutes plus tôt. La consigne 'ne préviens personne' était un signal majeur.",
+        "signalsLearned": [
+          "L'isolement ('ne dis rien à personne') est le drapeau rouge n°1"
+        ]
+      },
+      "a_end_lose_100k": {
+        "id": "a_end_lose_100k",
+        "type": "lose",
+        "title": "❌ Énorme Préjudice Financier & Émotionnel",
+        "summary": "Vous avez envoyé 100 000 FCFA sous le coup de la panique. Quand votre fils est rentré à 17h, vous avez compris le cauchemar.",
+        "signalsLearned": [
+          "Ne JAMAIS transférer d'argent sous l'emprise de la panique émotionnelle sans double vérification"
+        ]
+      }
+    }
   },
   {
     "id": 3,
-    "titre": "Faux Likeur de Vidéos",
+    "titre": "Offre d'Emploi TikTok / Faux Partenariat",
     "categorie": "💼 Emploi",
+    "description": "Une offre de travail en ligne trop belle pour être vraie, payée par likage de vidéos...",
     "initialMsg": {
-      "id": 1,
+      "id": "t_start",
       "type": "received",
       "time": "09:15",
-      "isVocal": false,
-      "senderName": "Recruteur TikTok VIP",
+      "senderName": "Sophie (Recrutement TikTok VIP)",
       "senderNumber": "+229 01 45 22 11",
+      "isVocal": true,
+      "audioText": "Bonjour ! Je suis Sophie, responsable RH chez TikTok Media Partners. Nous recrutons des évaluateurs de contenus à domicile. Il suffit de liker des vidéos pour gagner 15 000 FCFA par jour. Pour valider votre inscription et recevoir vos 2 000 FCFA de bienvenue, répondez oui !",
       "parts": [
-        { "text": "Bonjour ! Gagnez ", "suspect": false },
-        { "text": "15 000 F par jour", "suspect": true },
-        { "text": " en likant des vidéos TikTok. ", "suspect": false },
-        { "text": "Premier retrait garanti", "suspect": true },
-        { "text": " dès aujourd'hui. Cliquez ici pour commencer." }
+        { "text": "💼 Offre d'emploi à domicile lucrative. ", "suspect": false },
+        { "text": "15 000 FCFA / jour pour liker des vidéos.", "suspect": true },
+        { "text": " Écoutez la note vocale du recruteur.", "suspect": false }
+      ],
+      "choices": [
+        {
+          "id": "t_c1_interested",
+          "text": "Répondre OUI pour tester le travail et recevoir les 2000 FCFA",
+          "nextMsgId": "t_msg_test_task"
+        },
+        {
+          "id": "t_c1_ask_contract",
+          "text": "Demander un contrat de travail formel et l'IFU de l'entreprise",
+          "nextMsgId": "t_msg_evade_ifu"
+        },
+        {
+          "id": "t_c1_block",
+          "text": "Bloquer immédiatement : TikTok ne recrute jamais par WhatsApp avec des gains pareils",
+          "nextMsgId": "t_end_win_instant"
+        }
       ]
     },
-    "relanceMsg": {
-      "id": 99,
-      "type": "received",
-      "content": "Il ne vous reste que 5 places ! Cliquez vite sur le lien.",
-      "time": "09:16"
-    },
-    "choices": [
-      {
-        "id": "c3_click",
-        "text": "Cliquer sur le lien et investir du temps",
-        "target": "momo",
-        "isScam": true,
-        "amount": "10 000 FCFA (Frais d'activation VIP)"
+    "storyNodes": {
+      "t_msg_test_task": {
+        "id": "t_msg_test_task",
+        "type": "received",
+        "time": "09:18",
+        "senderName": "Sophie (Recrutement TikTok VIP)",
+        "senderNumber": "+229 01 45 22 11",
+        "isVocal": false,
+        "parts": [
+          { "text": "Bravo ! Voici vos 3 premières vidéos à liker : [lien1.link], [lien2.link]. C'est fait ? Pour débloquer votre compte de paiement ", "suspect": false },
+          { "text": "Niveau VIP 1", "suspect": true },
+          { "text": " et recevoir votre premier virement de 25 000 FCFA, vous devez faire un ", "suspect": false },
+          { "text": "dépôt de garantie de 10 000 FCFA", "suspect": true },
+          { "text": " remboursable ce soir.", "suspect": false }
+        ],
+        "choices": [
+          {
+            "id": "t_c2_pay_vip",
+            "text": "Payer les 10 000 FCFA de garantie pour débloquer le statut VIP 1",
+            "nextMsgId": "t_momo_vip1"
+          },
+          {
+            "id": "t_c2_refuse_pay_work",
+            "text": "Refuser : 'Un employé ne doit pas payer pour travailler !'",
+            "nextMsgId": "t_msg_scammer_pressure"
+          }
+        ]
       },
-      {
-        "id": "c3_block",
-        "text": "Bloquer et signaler le contact",
-        "target": "win",
-        "winReason": "Bien joué ! Il s'agissait d'une arnaque pyramidale classique aux fausses tâches."
+      "t_msg_evade_ifu": {
+        "id": "t_msg_evade_ifu",
+        "type": "received",
+        "time": "09:20",
+        "senderName": "Sophie (Recrutement TikTok VIP)",
+        "senderNumber": "+229 01 45 22 11",
+        "isVocal": true,
+        "audioText": "Ah vous posez trop de questions ! Nous sommes une plateforme internationale enregistrée à Singapour. Les contrats se signent uniquement après la période d'essai VIP. Si vous hésitez, les 50 places restantes vont être données à d'autres candidats !",
+        "parts": [
+          { "text": "⚠️ Écoutez la réponse vocale de la recruteuse sur l'absence de contrat.", "suspect": true }
+        ],
+        "choices": [
+          {
+            "id": "t_c3_report_cyber",
+            "text": "Signaler le numéro à la plateforme de lutte contre la cybercriminalité",
+            "nextMsgId": "t_end_win_report"
+          },
+          {
+            "id": "t_c3_try_anyway",
+            "text": "Céder à la peur de manquer une opportunité et essayer le niveau VIP 1",
+            "nextMsgId": "t_momo_vip1"
+          }
+        ]
       },
-      {
-        "id": "c3_ask",
-        "text": "Demander une preuve d'enregistrement d'entreprise",
-        "target": "details",
-        "reply": "Nous sommes une agence internationale certifiée. Déposez d'abord pour débloquer votre compte d'essai."
+      "t_msg_scammer_pressure": {
+        "id": "t_msg_scammer_pressure",
+        "type": "received",
+        "time": "09:22",
+        "senderName": "Sophie (Recrutement TikTok VIP)",
+        "senderNumber": "+229 01 45 22 11",
+        "isVocal": false,
+        "parts": [
+          { "text": "Ce n'est pas un paiement, c'est une ", "suspect": false },
+          { "text": "caution de tâche financière", "suspect": true },
+          { "text": ". Tous nos 500 membres actifs l'ont fait et gagnent 100 000F par semaine. Si vous refusez maintenant, votre numéro sera ", "suspect": false },
+          { "text": "blacklisted", "suspect": true },
+          { "text": " de nos services.", "suspect": false }
+        ],
+        "choices": [
+          {
+            "id": "t_c4_stay_strong",
+            "text": "Rester ferme : Bloquer le contact sans hésiter",
+            "nextMsgId": "t_end_win_firm"
+          },
+          {
+            "id": "t_c4_give_in",
+            "text": "Finir par payer les 10 000 FCFA de caution",
+            "nextMsgId": "t_momo_vip1"
+          }
+        ]
+      },
+      "t_momo_vip1": {
+        "id": "t_momo_vip1",
+        "type": "momo",
+        "amount": "10 000 FCFA",
+        "recipient": "+229 01 45 22 11 (Fonds VIP TikTok)",
+        "nextMsgId": "t_end_lose_pyramid"
       }
-    ],
-    "signals": [
-      { "id": "s1", "text": "Rémunération irréaliste pour des tâches triviales (liker des vidéos)", "suspect": true },
-      { "id": "s2", "text": "Prospection non sollicitée via messagerie privée", "suspect": true },
-      { "id": "s3", "text": "Demande ultérieure de frais de déblocage/VIP", "suspect": true }
-    ]
+    },
+    "endings": {
+      "t_end_win_instant": {
+        "id": "t_end_win_instant",
+        "type": "win",
+        "title": "🎉 Vigilance Instantanée !",
+        "summary": "Vous connaissez la règle : des gains mirobolants pour liker des vidéos sur WhatsApp est le schéma d'arnaque ponzi le plus répandu.",
+        "signalsLearned": [
+          "Rémunération irréaliste pour un travail sans qualification",
+          "Prospection non sollicitée par messagerie instantanée"
+        ]
+      },
+      "t_end_win_report": {
+        "id": "t_end_win_report",
+        "type": "win",
+        "title": "🎉 Citoyen Avisé !",
+        "summary": "L'absence de contrat légal et l'esquive de l'IFU ont confirmé le piège. Votre signalement protège d'autres victimes.",
+        "signalsLearned": [
+          "Exiger toujours un contrat et des identifiants d'entreprise légaux"
+        ]
+      },
+      "t_end_win_firm": {
+        "id": "t_end_win_firm",
+        "type": "win",
+        "title": "🎉 Règle d'Or Respectée !",
+        "summary": "Vous vous êtes rappelé de la règle fondamentale : 'On ne paie jamais pour travailler'. Vous avez sauvé vos 10 000 FCFA.",
+        "signalsLearned": [
+          "Un vrai employeur ne demande JAMAIS de dépôt de garantie ni d'achat de statut VIP"
+        ]
+      },
+      "t_end_lose_pyramid": {
+        "id": "t_end_lose_pyramid",
+        "type": "lose",
+        "title": "❌ Piégé dans l'Arnaque aux Tâches (10 000 FCFA perdus)",
+        "summary": "Après votre virement, ils vous auraient demandé 50 000 FCFA de 'VIP 2' pour retirer vos gains imaginaires. C'est la fraude pyramidale.",
+        "signalsLearned": [
+          "Les prétendus gains affichés sur l'application sont fictifs et verrouillés"
+        ]
+      }
+    }
   }
 ]
