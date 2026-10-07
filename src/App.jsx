@@ -56,6 +56,15 @@ const ArrowRightIcon = () => (
   </svg>
 );
 
+const scenarioIcons = {
+  Argent: '€',
+  Urgence: '!',
+  Emploi: '↗',
+  Appel: '☎',
+  Livraison: '▣',
+  Compte: '✓'
+};
+
 const BackIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="m15 18-6-6 6-6" />
@@ -427,7 +436,7 @@ const CellularSignalIcon = () => (
             {scenarios.map(scen => (
               <button key={scen.id} className="scenario-btn" onClick={() => startScenario(scen)}>
                 <div className={`scenario-icon scenario-icon-${scen.categorie.toLowerCase()}`} aria-hidden="true">
-                  {scen.categorie === 'Argent' ? '€' : scen.categorie === 'Urgence' ? '!' : '↗'}
+                  {scenarioIcons[scen.categorie] || '•'}
                 </div>
                 <div className="scen-info">
                   <span className="scen-cat">{scen.categorie}</span>
@@ -507,7 +516,28 @@ const CellularSignalIcon = () => (
                 {messages.map((msg) => (
                   <div key={msg.id} className={`message ${msg.type} ${msg.isVocal ? 'vocal-message' : ''}`}>
                     <div className={`message-bubble ${msg.type} ${msg.isVocal ? 'vocal-bubble' : ''}`}>
-                      {msg.type === 'received' && msg.isVocal ? (
+                      {msg.type === 'received' && msg.isCall ? (
+                        <div className="call-card">
+                          <div className="call-card-heading">
+                            <span className="call-icon" aria-hidden="true">☎</span>
+                            <div>
+                              <strong>Appel entrant</strong>
+                              <span>Simulation d’appel téléphonique</span>
+                            </div>
+                          </div>
+                          <button
+                            className={`call-listen-btn ${playingAudioId === msg.id ? 'playing' : ''}`}
+                            onClick={() => handlePlayVoice(msg.id, msg.audioText || '')}
+                            aria-label={playingAudioId === msg.id ? 'Arrêter l’appel simulé' : 'Écouter l’appel simulé'}
+                          >
+                            {playingAudioId === msg.id ? <PauseIcon /> : <PlayIcon />}
+                            {playingAudioId === msg.id ? 'Arrêter l’appel' : 'Écouter l’appel'}
+                          </button>
+                          {voiceError?.msgId === msg.id && (
+                            <p className="vocal-error" role="status">{voiceError.message}</p>
+                          )}
+                        </div>
+                      ) : msg.type === 'received' && msg.isVocal ? (
                         <div className="vocal-player">
                           <button
                             className={`vocal-play-btn ${playingAudioId === msg.id ? 'playing' : ''}`}

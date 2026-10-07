@@ -918,6 +918,67 @@
   line-height: 1.35;
 }
 
+.call-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 230px;
+}
+
+.call-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.call-icon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e4f3ed;
+  color: #16825d;
+  font-size: 19px;
+}
+
+.call-card-heading div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.call-card-heading strong {
+  color: var(--ui-text);
+  font-size: 14px;
+}
+
+.call-card-heading div span {
+  color: var(--ui-muted);
+  font-size: 11px;
+}
+
+.call-listen-btn {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--ui-primary);
+  color: white;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.call-listen-btn.playing {
+  background: var(--ui-primary-dark);
+}
+
 /* Buttons */
 .replay-btn {
   background: var(--ui-primary);

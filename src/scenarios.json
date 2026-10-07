@@ -495,5 +495,280 @@
         ]
       }
     }
+  },
+  {
+    "id": 4,
+    "titre": "Faux conseiller bancaire au téléphone",
+    "categorie": "Appel",
+    "description": "Un prétendu conseiller signale une fraude et vous presse de communiquer un code secret.",
+    "initialMsg": {
+      "id": "b_start",
+      "type": "received",
+      "time": "10:26",
+      "senderName": "Conseiller bancaire (appelant inconnu)",
+      "senderNumber": "+229 XX XX XX XX",
+      "isCall": true,
+      "isVocal": true,
+      "audioText": "Bonjour, service sécurité de votre banque. Une opération suspecte est en cours sur votre compte. Pour la bloquer, lisez-moi immédiatement le code de validation reçu par SMS. Ne raccrochez pas, sinon le virement sera confirmé.",
+      "parts": [
+        { "text": "Le prétendu conseiller parle d'une opération urgente et réclame un code reçu par SMS.", "suspect": true }
+      ],
+      "choices": [
+        {
+          "id": "b_c1_hangup",
+          "text": "Raccrocher et rappeler le numéro officiel inscrit sur ma carte bancaire",
+          "nextMsgId": "b_end_win_verify"
+        },
+        {
+          "id": "b_c1_code",
+          "text": "Lire le code reçu par SMS pour bloquer l'opération",
+          "nextMsgId": "b_msg_code"
+        },
+        {
+          "id": "b_c1_app",
+          "text": "Suivre ses instructions et installer l'application qu'il m'envoie",
+          "nextMsgId": "b_end_lose_access"
+        }
+      ]
+    },
+    "storyNodes": {
+      "b_msg_code": {
+        "id": "b_msg_code",
+        "type": "received",
+        "time": "10:27",
+        "senderName": "Conseiller bancaire (appelant inconnu)",
+        "senderNumber": "+229 XX XX XX XX",
+        "isVocal": true,
+        "audioText": "Merci. Maintenant, confirmez-moi le code à six chiffres reçu par SMS. C'est la seule façon d'annuler le virement. Gardez la ligne, le compte à rebours a déjà commencé.",
+        "parts": [
+          { "text": "Le prétendu conseiller réclame à nouveau un code de validation et insiste sur l'urgence.", "suspect": true }
+        ],
+        "choices": [
+          {
+            "id": "b_c2_stop",
+            "text": "Refuser de partager le code, raccrocher et appeler ma banque avec son numéro officiel",
+            "nextMsgId": "b_end_win_code"
+          },
+          {
+            "id": "b_c2_share",
+            "text": "Communiquer le code pour éviter le blocage de mon compte",
+            "nextMsgId": "b_end_lose_code"
+          }
+        ]
+      }
+    },
+    "endings": {
+      "b_end_win_verify": {
+        "id": "b_end_win_verify",
+        "type": "win",
+        "title": "Bon réflexe : vous avez vérifié !",
+        "summary": "En rappelant votre banque avec un numéro trouvé indépendamment, vous évitez de parler au fraudeur.",
+        "signalsLearned": [
+          "Un vrai conseiller ne demande jamais un code de validation par téléphone",
+          "Raccrochez et rappelez votre banque à son numéro officiel"
+        ]
+      },
+      "b_end_win_code": {
+        "id": "b_end_win_code",
+        "type": "win",
+        "title": "Votre code reste secret !",
+        "summary": "Vous avez mis fin à l'appel et contacté votre banque par un canal sûr. Le code SMS sert à autoriser une opération, pas à l'annuler.",
+        "signalsLearned": [
+          "Ne partagez jamais un code reçu par SMS, même avec un interlocuteur qui semble connaître votre banque",
+          "L'urgence et la menace de blocage sont des techniques de pression"
+        ]
+      },
+      "b_end_lose_code": {
+        "id": "b_end_lose_code",
+        "type": "lose",
+        "title": "Le code a validé l'opération du fraudeur",
+        "summary": "Le code transmis a permis d'autoriser une opération ou de prendre le contrôle d'un accès. Contactez immédiatement votre banque par son numéro officiel.",
+        "signalsLearned": [
+          "Un code à usage unique est un secret : la banque ne vous le demandera pas",
+          "Ne faites jamais confiance au numéro affiché lors d'un appel entrant"
+        ]
+      },
+      "b_end_lose_access": {
+        "id": "b_end_lose_access",
+        "type": "lose",
+        "title": "L'application donnait accès à vos informations",
+        "summary": "Une application de contrôle à distance peut permettre à un fraudeur de voir votre écran ou d'utiliser votre téléphone. Ne l'installez pas sur demande d'un appelant.",
+        "signalsLearned": [
+          "N'installez jamais une application envoyée par un prétendu conseiller",
+          "Raccrochez et joignez votre banque à partir d'une source officielle"
+        ]
+      }
+    }
+  },
+  {
+    "id": 5,
+    "titre": "Faux SMS de livraison de colis",
+    "categorie": "Livraison",
+    "description": "Un SMS inattendu réclame de petits frais pour débloquer un colis et mène vers un faux site.",
+    "initialMsg": {
+      "id": "p_start",
+      "type": "received",
+      "time": "08:42",
+      "senderName": "Livraison express",
+      "senderNumber": "Expéditeur inconnu",
+      "isVocal": false,
+      "parts": [
+        { "text": "Votre colis est bloqué faute de frais de livraison de ", "suspect": false },
+        { "text": "500 FCFA. Payez aujourd'hui sur ce lien pour éviter le retour de votre colis : livraison-suivi.exemple", "suspect": true }
+      ],
+      "choices": [
+        {
+          "id": "p_c1_site",
+          "text": "Ne pas ouvrir le lien et vérifier le suivi sur le site officiel du transporteur",
+          "nextMsgId": "p_end_win_official"
+        },
+        {
+          "id": "p_c1_link",
+          "text": "Ouvrir le lien pour payer les 500 FCFA demandés",
+          "nextMsgId": "p_msg_fake_site"
+        },
+        {
+          "id": "p_c1_ignore",
+          "text": "Je n'attends aucun colis : supprimer le SMS et bloquer l'expéditeur",
+          "nextMsgId": "p_end_win_unexpected"
+        }
+      ]
+    },
+    "storyNodes": {
+      "p_msg_fake_site": {
+        "id": "p_msg_fake_site",
+        "type": "received",
+        "time": "08:44",
+        "senderName": "Page de paiement non vérifiée",
+        "senderNumber": "Site ouvert depuis le SMS",
+        "isVocal": false,
+        "parts": [
+          { "text": "La page imite un transporteur et demande vos ", "suspect": false },
+          { "text": "coordonnées bancaires complètes et le code reçu par SMS", "suspect": true },
+          { "text": " pour régler les frais.", "suspect": false }
+        ],
+        "choices": [
+          {
+            "id": "p_c2_close",
+            "text": "Fermer la page sans saisir d'information et vérifier par un canal officiel",
+            "nextMsgId": "p_end_win_close"
+          },
+          {
+            "id": "p_c2_card",
+            "text": "Saisir ma carte et le code SMS pour recevoir le colis",
+            "nextMsgId": "p_end_lose_card"
+          }
+        ]
+      }
+    },
+    "endings": {
+      "p_end_win_official": {
+        "id": "p_end_win_official",
+        "type": "win",
+        "title": "Vous avez vérifié à la bonne source",
+        "summary": "Vous avez consulté le suivi depuis le site officiel plutôt que d'utiliser un lien reçu sans l'avoir demandé.",
+        "signalsLearned": [
+          "Un petit montant à payer peut servir à voler des données de carte",
+          "Retrouvez vous-même le site ou le numéro officiel du transporteur"
+        ]
+      },
+      "p_end_win_unexpected": {
+        "id": "p_end_win_unexpected",
+        "type": "win",
+        "title": "Un colis inattendu ? Pas de clic !",
+        "summary": "Vous n'attendez pas de colis : supprimer le message et bloquer l'expéditeur évite tout risque.",
+        "signalsLearned": [
+          "Méfiez-vous des messages inattendus qui créent une urgence",
+          "N'ouvrez pas les liens d'expéditeurs inconnus"
+        ]
+      },
+      "p_end_win_close": {
+        "id": "p_end_win_close",
+        "type": "win",
+        "title": "Vous avez arrêté la fraude à temps",
+        "summary": "Vous n'avez transmis aucune donnée et allez vérifier le colis directement auprès du transporteur.",
+        "signalsLearned": [
+          "Une page de paiement ne devrait pas réclamer le code SMS de votre banque pour un colis",
+          "Un lien reçu par SMS peut imiter parfaitement un site officiel"
+        ]
+      },
+      "p_end_lose_card": {
+        "id": "p_end_lose_card",
+        "type": "lose",
+        "title": "Vos données bancaires sont compromises",
+        "summary": "Le site frauduleux peut utiliser votre carte et le code transmis. Faites opposition et contactez votre banque immédiatement par un canal officiel.",
+        "signalsLearned": [
+          "Ne communiquez jamais un code bancaire pour recevoir un colis",
+          "Vérifiez une livraison sans utiliser le lien contenu dans un SMS inattendu"
+        ]
+      }
+    }
+  },
+  {
+    "id": 6,
+    "titre": "Appel manqué : faut-il rappeler ?",
+    "categorie": "Appel",
+    "description": "Un appel très bref depuis un numéro international inconnu cherche à vous faire rappeler.",
+    "initialMsg": {
+      "id": "w_start",
+      "type": "received",
+      "time": "21:13",
+      "senderName": "Numéro international inconnu",
+      "senderNumber": "+XXX XX XX XX XX",
+      "isVocal": false,
+      "parts": [
+        { "text": "Un appel d'une seconde a été manqué. Aucun message vocal n'a été laissé. Le numéro est inconnu et son indicatif est international.", "suspect": true }
+      ],
+      "choices": [
+        {
+          "id": "w_c1_callback",
+          "text": "Rappeler tout de suite pour savoir qui a essayé de me joindre",
+          "nextMsgId": "w_end_lose_callback"
+        },
+        {
+          "id": "w_c1_block",
+          "text": "Ne pas rappeler, bloquer le numéro et vérifier s'il s'agit d'un appel attendu",
+          "nextMsgId": "w_end_win_block"
+        },
+        {
+          "id": "w_c1_search",
+          "text": "Chercher le numéro et demander à mon opérateur s'il semble suspect",
+          "nextMsgId": "w_end_win_check"
+        }
+      ]
+    },
+    "storyNodes": {},
+    "endings": {
+      "w_end_lose_callback": {
+        "id": "w_end_lose_callback",
+        "type": "lose",
+        "title": "Le rappel peut coûter cher",
+        "summary": "Certains appels très brefs cherchent à déclencher un rappel vers un numéro surtaxé. Vérifiez toujours un appel international inconnu avant de rappeler.",
+        "signalsLearned": [
+          "Un seul appel très court, sans message, peut être un piège au rappel",
+          "Ne rappelez pas un numéro international inconnu sans vérification"
+        ]
+      },
+      "w_end_win_block": {
+        "id": "w_end_win_block",
+        "type": "win",
+        "title": "Vous n'avez pas rappelé à l'aveugle",
+        "summary": "Vous avez évité un rappel potentiellement surtaxé et gardé le contrôle de vos appels.",
+        "signalsLearned": [
+          "Un appel attendu laisse généralement un message ou rappelle",
+          "Bloquez et signalez les numéros suspects à votre opérateur"
+        ]
+      },
+      "w_end_win_check": {
+        "id": "w_end_win_check",
+        "type": "win",
+        "title": "Vous avez pris le temps de vérifier",
+        "summary": "La recherche du numéro et la vérification auprès de votre opérateur sont plus sûres qu'un rappel immédiat.",
+        "signalsLearned": [
+          "Vérifiez un indicatif inconnu avant de rappeler",
+          "Ne suivez pas les consignes d'un appelant inconnu sous la pression"
+        ]
+      }
+    }
   }
 ]
