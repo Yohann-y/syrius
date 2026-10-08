@@ -3,27 +3,35 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "mobile/index.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "mobile": "expo start",
+    "mobile:android": "expo run:android",
+    "build:apk": "export ANDROID_HOME=\"${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$HOME/Android/Sdk}}\" && export ANDROID_SDK_ROOT=\"${ANDROID_SDK_ROOT:-$ANDROID_HOME}\" && ./android/gradlew -p android assembleDebug -PreactNativeArchitectures=arm64-v8a && cp android/app/build/outputs/apk/debug/app-debug.apk public/syrius.apk"
   },
   "dependencies": {
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "expo": "^57.0.27",
+    "expo-speech": "~57.0.3",
+    "expo-system-ui": "~57.0.4",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.86.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.7",
+    "@types/react": "~19.2.4",
+    "@types/react-dom": "~19.2.3",
     "@vitejs/plugin-react": "^6.1.1",
     "eslint": "^10.10.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.6",
     "globals": "^17.12.0",
-    "typescript": "^5.0.0",
+    "typescript": "~6.0.3",
     "vite": "^8.3.0",
     "vitest": "^1.6.0"
   }
