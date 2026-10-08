@@ -598,6 +598,10 @@
   background: rgba(255, 255, 255, 0.75);
 }
 
+.phone-call-screen + .home-indicator {
+  background: rgba(255, 255, 255, 0.72);
+}
+
 /* End Screen */
 .end-screen {
   position: relative;
@@ -954,6 +958,197 @@
   border-radius: 50%;
   z-index: 101;
   box-shadow: 0 0 0 2px #17191d, inset 0 0 0 1px #252830;
+}
+
+.phone-call-screen {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 42px 18px 24px;
+  background:
+    radial-gradient(ellipse at 50% 34%, rgba(26, 111, 103, 0.72), transparent 55%),
+    linear-gradient(160deg, #142d34 0%, #103d3b 54%, #102a30 100%);
+  color: #fff;
+}
+
+.call-screen-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.call-exit-btn {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  cursor: pointer;
+}
+
+.call-secure-mark {
+  color: #7fdfbd;
+  font-size: 10px;
+}
+
+.call-screen-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 4px;
+  text-align: center;
+}
+
+.call-status {
+  color: #a8d9cb;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.caller-avatar-wrap {
+  display: grid;
+  width: 112px;
+  height: 112px;
+  place-items: center;
+  margin: 24px 0 20px;
+  border: 1px solid rgba(178, 237, 215, 0.24);
+  border-radius: 50%;
+  background: rgba(178, 237, 215, 0.07);
+  box-shadow: 0 0 0 12px rgba(178, 237, 215, 0.035);
+}
+
+.caller-avatar {
+  display: grid;
+  width: 82px;
+  height: 82px;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #56a991, #277765);
+  color: white;
+  font-size: 34px;
+  font-weight: 600;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+}
+
+.caller-name {
+  max-width: 100%;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.caller-number {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 14px;
+}
+
+.call-description {
+  max-width: 275px;
+  margin: 20px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.call-listen-btn {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 22px;
+  padding: 0 18px;
+  border: 1px solid rgba(171, 232, 210, 0.35);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.call-listen-btn:hover,
+.call-listen-btn.playing {
+  background: rgba(111, 205, 170, 0.2);
+}
+
+.call-listen-btn:active {
+  transform: scale(0.98);
+}
+
+.call-listen-icon {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  background: #80d9b6;
+  color: #143a35;
+}
+
+.call-voice-error {
+  max-width: 290px;
+  margin-top: 10px;
+  color: #ffd7cc;
+}
+
+.call-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.call-actions h2 {
+  margin: 0 0 2px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.call-choice-btn {
+  min-height: 42px;
+  padding: 9px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.92);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.call-choice-btn:hover {
+  border-color: rgba(163, 229, 205, 0.52);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.call-choice-primary {
+  border-color: rgba(130, 222, 188, 0.58);
+  background: rgba(51, 146, 119, 0.34);
 }
 
 /* ===== Phone Wrapper ===== */
