@@ -27,13 +27,13 @@ l’API 36, les build-tools 36.0.0 et le NDK 27.1.12297006. Configurez
 npm run build:apk
 ```
 
-Cette commande produit un APK de test signé avec la clé de débogage Android,
-ciblé sur les téléphones ARM64, et le copie dans `public/syrius.apk`. Le bouton
-du site télécharge ce fichier. Pour utiliser une autre URL, définissez
+Cette commande produit un APK autonome en mode release, ciblé sur les téléphones
+ARM64, et le copie dans `public/syrius.apk`. Le bundle JavaScript est inclus :
+Metro n’a pas besoin de tourner sur le téléphone pour ouvrir l’application.
+L’APK est signé avec la clé de débogage Android pour l’installation et les tests,
+pas pour une distribution officielle en magasin d’applications. Le bouton du
+site télécharge ce fichier. Pour utiliser une autre URL, définissez
 `VITE_APK_DOWNLOAD_URL` avant de construire le site.
-
-Un APK de débogage convient aux essais et à l’installation directe, mais ne
-remplace pas un APK de production signé pour une distribution officielle.
 
 ## Site web et vérifications
 
