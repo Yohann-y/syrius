@@ -10,6 +10,7 @@ import {
   TextInput,
   View,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import * as Speech from 'expo-speech'
 import scenarios from '../src/scenarios.json'
 
@@ -202,7 +203,7 @@ export default function App() {
 
   if (screen === 'intro') {
     return (
-      <View style={styles.page}>
+      <SafeAreaView edges={['top', 'bottom']} style={styles.page}>
         <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
         <View style={styles.hero}>
           <View style={styles.logoMark}>
@@ -224,13 +225,13 @@ export default function App() {
           <Button onPress={() => setScreen('menu')}>Commencer</Button>
           <Text style={styles.caption}>Aucune expérience nécessaire</Text>
         </View>
-      </View>
+      </SafeAreaView>
     )
   }
 
   if (screen === 'menu') {
     return (
-      <View style={styles.page}>
+      <SafeAreaView edges={['top', 'bottom']} style={styles.page}>
         <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
         <ScrollView contentContainerStyle={styles.menuContent}>
           <View style={styles.menuHeading}>
@@ -276,55 +277,57 @@ export default function App() {
             Prenez le temps de vérifier. Ne cédez jamais à la pression.
           </Text>
         </ScrollView>
-      </View>
+      </SafeAreaView>
     )
   }
 
   if (screen === 'momo') {
     return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.page}
-      >
+      <SafeAreaView edges={['top', 'bottom']} style={styles.page}>
         <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
-        <View style={styles.momoHeader}>
-          <Text style={styles.momoBrand}>Moov / MTN Money</Text>
-          <Pressable accessibilityRole="button" onPress={replay}>
-            <Text style={styles.closeButton}>Fermer</Text>
-          </Pressable>
-        </View>
-        <View style={styles.momoContent}>
-          <Text style={styles.momoTitle}>Confirmer le transfert</Text>
-          <Text style={styles.momoAmount}>Montant : {momoDetails?.amount || '5 000 FCFA'}</Text>
-          <Text style={styles.bodyText}>
-            Bénéficiaire : {momoDetails?.recipient || '+229 01 XX XX XX'}
-          </Text>
-          <Text style={styles.fieldLabel}>Entrez votre code secret à 4 chiffres</Text>
-          <TextInput
-            accessibilityLabel="Code secret à quatre chiffres"
-            autoComplete="off"
-            keyboardType="number-pad"
-            maxLength={4}
-            onChangeText={(value) => setSecretCode(value.replace(/\D/g, ''))}
-            secureTextEntry
-            style={styles.secretInput}
-            value={secretCode}
-          />
-          <Button
-            disabled={secretCode.length !== 4}
-            onPress={handleMomoSubmit}
-            style={styles.fullWidthButton}
-          >
-            Confirmer le transfert
-          </Button>
-          <Text style={styles.warning}>
-            Ne communiquez jamais votre code secret par téléphone ou message !
-          </Text>
-          <Button onPress={replay} secondary style={styles.fullWidthButton}>
-            Quitter la simulation
-          </Button>
-        </View>
-      </KeyboardAvoidingView>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.keyboardAvoiding}
+        >
+          <View style={styles.momoHeader}>
+            <Text style={styles.momoBrand}>Moov / MTN Money</Text>
+            <Pressable accessibilityRole="button" onPress={replay}>
+              <Text style={styles.closeButton}>Fermer</Text>
+            </Pressable>
+          </View>
+          <View style={styles.momoContent}>
+            <Text style={styles.momoTitle}>Confirmer le transfert</Text>
+            <Text style={styles.momoAmount}>Montant : {momoDetails?.amount || '5 000 FCFA'}</Text>
+            <Text style={styles.bodyText}>
+              Bénéficiaire : {momoDetails?.recipient || '+229 01 XX XX XX'}
+            </Text>
+            <Text style={styles.fieldLabel}>Entrez votre code secret à 4 chiffres</Text>
+            <TextInput
+              accessibilityLabel="Code secret à quatre chiffres"
+              autoComplete="off"
+              keyboardType="number-pad"
+              maxLength={4}
+              onChangeText={(value) => setSecretCode(value.replace(/\D/g, ''))}
+              secureTextEntry
+              style={styles.secretInput}
+              value={secretCode}
+            />
+            <Button
+              disabled={secretCode.length !== 4}
+              onPress={handleMomoSubmit}
+              style={styles.fullWidthButton}
+            >
+              Confirmer le transfert
+            </Button>
+            <Text style={styles.warning}>
+              Ne communiquez jamais votre code secret par téléphone ou message !
+            </Text>
+            <Button onPress={replay} secondary style={styles.fullWidthButton}>
+              Quitter la simulation
+            </Button>
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
     )
   }
 
@@ -336,7 +339,7 @@ export default function App() {
         : colors.red
 
     return (
-      <View style={styles.page}>
+      <SafeAreaView edges={['top', 'bottom']} style={styles.page}>
         <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
         <ScrollView contentContainerStyle={styles.resultsContent}>
           <Text style={styles.brand}>SYRIUS</Text>
@@ -381,14 +384,14 @@ export default function App() {
             Recommencer un scénario
           </Button>
         </ScrollView>
-      </View>
+      </SafeAreaView>
     )
   }
 
   const isCall = currentMessage?.isCall
 
   return (
-    <View style={styles.gamePage}>
+    <SafeAreaView edges={['top', 'bottom']} style={styles.gamePage}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
       <View style={styles.chatHeader}>
         <Pressable accessibilityRole="button" onPress={replay} style={styles.backButton}>
@@ -485,7 +488,7 @@ export default function App() {
           ))}
         </View>
       )}
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -494,7 +497,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     flex: 1,
     paddingHorizontal: 22,
-    paddingTop: 28,
+    paddingTop: 12,
   },
   hero: {
     alignItems: 'center',
@@ -652,7 +655,8 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   preventionTitle: { color: colors.text, fontSize: 14, fontWeight: '800' },
-  gamePage: { backgroundColor: '#edf2f0', flex: 1, paddingTop: 10 },
+  keyboardAvoiding: { flex: 1 },
+  gamePage: { backgroundColor: '#edf2f0', flex: 1 },
   chatHeader: {
     alignItems: 'center',
     backgroundColor: colors.surface,
